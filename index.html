@@ -136,18 +136,23 @@
   </div>
   <script>
     // Configuração Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCahzwcVc5PO_tMgR17quZ850DPvqPUuR8",
-      authDomain: "controle-cdi.firebaseapp.com",
-      projectId: "controle-cdi",
-      storageBucket: "controle-cdi.appspot.com",
-      messagingSenderId: "215359645646",
-      appId: "1:215359645646:web:79817657642f77b522ad9f",
-      measurementId: "G-RWM8ESFFQH"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+   <script>
+  // Configuração Firebase (copiada do console e ajustada para v8)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8",
+    authDomain: "controle-cdi.firebaseapp.com",
+    projectId: "controle-cdi",
+    storageBucket: "controle-cdi.appspot.com",   // ⚠️ corrigido para .appspot.com
+    messagingSenderId: "215359645646",
+    appId: "1:215359645646:web:6759dd7485f63df222ad9f",
+    measurementId: "G-GM0VBY5Y1M"
+  };
 
+  // Inicializa Firebase com sintaxe v8
+  firebase.initializeApp(firebaseConfig);
+
+  // Serviço de autenticação
+  const auth = firebase.auth();
     // Elementos
     const authPanel = document.getElementById('auth-panel');
     const mainContainer = document.getElementById('main-container');
@@ -405,3 +410,4 @@
   </script>
 </body>
 </html>
+
