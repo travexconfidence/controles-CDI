@@ -864,7 +864,29 @@
             XLSX.writeFile(wb, `Controle_Ganhos_CDI_${hoje}.xlsx`);
             log('💾 Dados exportados para Excel.');
         });
-        
+            <!-- aqui já é o final do seu layout -->
+
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8",
+        authDomain: "controle-cdi.firebaseapp.com",
+        projectId: "controle-cdi",
+        storageBucket: "controle-cdi.firebasestorage.app",
+        messagingSenderId: "215359645646",
+        appId: "1:215359645646:web:6759dd7485f63df222ad9f",
+        measurementId: "G-GM0VBY5Y1M"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+
+      console.log("Firebase inicializado com sucesso!", app);
     </script>
 </body>
 </html>
+  
+
