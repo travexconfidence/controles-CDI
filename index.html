@@ -231,27 +231,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
-    <script>
-        // CONFIGURAÇÃO DO FIREBASE COM SUAS CHAVES CORRIGIDAS
-        const firebaseConfig = {
-            apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8", 
-            authDomain: "controle-cdi.firebaseapp.com",
-            // IMPORTANTE: URL para o Realtime Database, seguindo o padrão do seu Project ID
-            databaseURL: "https://controle-cdi-default-rtdb.firebaseio.com", 
-            projectId: "controle-cdi", 
-            storageBucket: "controle-cdi.firebasestorage.app", 
-            messagingSenderId: "215359645646",
-            appId: "1:215359645646:web:411c4eff3adfc83222ad9f"
-        };
-
-        // Inicializa o Firebase e o banco de dados
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Define o caminho no banco de dados. Este é o ID único para TODOS os dados do seu controle.
-        const DB_PATH = 'cdi_control_global_state'; 
-    </script>
-
 </head>
 <body onload="loadState()">
     <div id="logo-wrapper">
@@ -342,11 +321,11 @@
             <div class="input-row">
                 <div>
                     <label for="taxaCdiAnual">Taxa CDI Anual Global (%)</label>
-                    <input type="text" id="taxaCdiAnual" placeholder="14,90" value="14,90" onchange="calculateAndRender()">
+                    <input type="text" id="taxaCdiAnual" placeholder="14,90" value="14,90" onchange="calculateAndRender(); saveState()">
                 </div>
                 <div>
                     <label for="diasAno">Dias no Ano</label>
-                    <input type="text" id="diasAno" placeholder="252" value="252" onchange="calculateAndRender()">
+                    <input type="text" id="diasAno" placeholder="252" value="252" onchange="calculateAndRender(); saveState()">
                 </div>
             </div>
             <hr style="border:none;border-top:1px solid rgba(15,23,36,0.04);margin:12px 0;">
@@ -383,78 +362,29 @@
         </div>
     </div>
     <script>
-        /* ---------- Funções utilitárias e lógica ---------- */
+        /* -----------------------------------------------------------------------
+         * CONFIGURAÇÃO E INICIALIZAÇÃO DO FIREBASE (CORRIGIDO)
+         * -----------------------------------------------------------------------
+         */
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8", 
+            authDomain: "controle-cdi.firebaseapp.com",
+            databaseURL: "https://controle-cdi-default-rtdb.firebaseio.com", 
+            projectId: "controle-cdi", 
+            storageBucket: "controle-cdi.firebasestorage.app", 
+            messagingSenderId: "215359645646",
+            appId: "1:215359645646:web:411c4eff3adfc83222ad9f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const DB_PATH = 'cdi_control_global_state'; 
+        
+        let operacoes = [];
+        let totalCompromissada=0, totalRetorno=0, totalGanho=0;
+
+        // Funções utilitárias (Formatação e Conversão)
         function log(message) { document.getElementById('log').textContent = message; }
-
-        function resetThemeToFixed() {
-            // Aplica as cores fixas e garante que os estilos dos botões estão corretos
-            document.documentElement.style.setProperty('--primary', '#0A0A33');
-            document.documentElement.style.setProperty('--secondary', '#C00000');
-        }
-
-        const logoInput = document.getElementById('logoFile');
-        const siteLogo = document.getElementById('siteLogo');
-        async function compressImageFile(file, quality = 0.7, maxSize = 600) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const ratio = Math.min(1, maxSize / Math.max(img.width, img.height));
-                        canvas.width = Math.round(img.width * ratio);
-                        canvas.height = Math.round(img.height * ratio);
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        try {
-                            const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                            resolve(dataUrl);
-                        } catch (err) { reject(err); }
-                    };
-                    img.onerror = reject;
-                    img.src = reader.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        if (logoInput) {
-            logoInput.addEventListener('change', async (e) => {
-                const file = e.target.files && e.target.files[0];
-                if(!file) return;
-
-                try {
-                    const compressed = await compressImageFile(file, 0.7, 600);
-                    siteLogo.src = compressed;
-                    siteLogo.style.display = 'block';
-                    localStorage.setItem('cdiLogo', compressed);
-                     log('✅ Logo salvo localmente.');
-                } catch (err) {
-                    console.error(err);
-                    log('❌ Erro ao processar o logo.');
-                }
-                resetThemeToFixed();
-            });
-             const addLogoBtn = document.getElementById('addLogoBtn');
-             if (addLogoBtn) {
-                 addLogoBtn.addEventListener('click', () => {
-                     logoInput.click();
-                 });
-             }
-        }
-        const removeLogoBtn = document.getElementById('removeLogoBtn');
-        if (removeLogoBtn) {
-            removeLogoBtn.addEventListener('click', ()=>{
-                if(!confirm('Tem certeza que deseja remover logo salvo e restaurar padrão?')) return;
-                localStorage.removeItem('cdiLogo');
-                siteLogo.src = '';
-                siteLogo.style.display = 'none';
-                resetThemeToFixed();
-                log('🗑️ Logo removido. Tema restaurado.');
-            });
-        }
-        // --- Funções de processamento de dados ---
         function cleanCurrency(v){
              if(typeof v!=='string') v=String(v);
              let cleanString = v.replace(/[R$\s]/g, '');
@@ -469,7 +399,6 @@
              const n=parseFloat(v);
              return isNaN(n)?0:n;
          }
-
         function cleanCdiTaxa(v){
              if(v===undefined||v===null||v==='') return 0;
              if(typeof v!=='string') v=String(v);
@@ -480,12 +409,10 @@
              const n=parseFloat(c);
              return isNaN(n)?0:n;
          }
-
         function formatBRL(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2}); }
         function formatPercent(n){ if(n===undefined||n===null||isNaN(n)) return ''; return n.toFixed(4).replace('.',','); }
         function formatPU(n){ if(n===undefined||n===null||isNaN(n)||n===0) return '-'; return n.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4}); }
         function formatDataBR(s){ if(!s) return '-'; if(s.match(/^\d{4}-\d{2}-\d{2}$/)){ const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; } if(s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s; const d=new Date(s); if(!isNaN(d)) return d.toLocaleDateString('pt-BR'); return s; }
-
         function normalizeDate(s){
              if(!s) return '';
              s=String(s).trim();
@@ -509,10 +436,7 @@
              try{ const d=new Date(s); if(!isNaN(d)) return d.toISOString().split('T')[0]; }catch(e){}
              return '';
          }
-
-        /* Persistência e estado - FIREBASE */
-        let operacoes = [], totalCompromissada=0, totalRetorno=0, totalGanho=0;
-
+        
         // Função para SALVAR no Firebase
         function saveState(){
             try{
@@ -521,8 +445,6 @@
                     taxaCdiAnual: document.getElementById('taxaCdiAnual').value,
                     diasAno: document.getElementById('diasAno').value
                 };
-
-                // Salva os dados no Firebase Realtime Database
                 database.ref(DB_PATH).set(state)
                     .then(() => {
                         log('💾 Dados salvos na nuvem (Firebase) com sucesso!');
@@ -531,19 +453,16 @@
                         log('❌ Erro ao salvar no Firebase. Verifique sua conexão e permissões.');
                         console.error("Firebase Save Error: ", error);
                     });
-
             }catch(e){
                 console.warn(e);
             }
         }
 
-        /* Carrega estado e logo salvos - FIREBASE */
+        // Carrega estado do Firebase (CORRIGIDO: Tornada global com window.)
         window.loadState = ()=>{
-            resetThemeToFixed();
             const siteLogo = document.getElementById('siteLogo');
             log('Aguardando... Tentando carregar dados da nuvem (Firebase)...');
 
-            // 1. Tenta carregar do Firebase
             database.ref(DB_PATH).once('value')
                 .then((snapshot) => {
                     const st = snapshot.val();
@@ -561,7 +480,7 @@
                     console.error("Firebase Load Error: ", error);
                 })
                 .finally(() => {
-                    // Lógica de Logo (Mantida local)
+                    // Lógica de Logo
                     try {
                         const savedLogo = localStorage.getItem('cdiLogo');
                         if (savedLogo) {
@@ -570,14 +489,12 @@
                         }
                     } catch (err) { console.warn(err); }
 
-                    // Anexa todos os listeners de evento
                     attachEventListeners(); 
-                    // Garante que o estado seja carregado e a renderização finalizada
                     calculateAndRender();
                 });
         };
-        
-        /* Renderização */
+
+        // Funções de Renderização e Cálculo
         function updateTotalCards(){ document.querySelector('#totalCompromissadaDisplay p').textContent = formatBRL(totalCompromissada); document.querySelector('#totalRetornoDisplay p').textContent = formatBRL(totalRetorno); document.querySelector('#totalCdiDisplay p').textContent = formatBRL(totalGanho); }
         function calculateAndRender(){
             totalCompromissada=0; totalRetorno=0; totalGanho=0;
@@ -585,7 +502,6 @@
             const diasAno = parseNumber(document.getElementById('diasAno').value) || 252;
             const showIndividual = document.getElementById('showIndividualOps').checked;
 
-            // LER E NORMALIZAR OS FILTROS
             const filterStartDateStr = document.getElementById('filterStartDate').value;
             const filterEndDateStr = document.getElementById('filterEndDate').value;
             const filterStart = filterStartDateStr ? normalizeDate(filterStartDateStr) : '';
@@ -598,7 +514,7 @@
                 return true;
             });
             ops.sort((a,b)=> normalizeDate(a.data).localeCompare(normalizeDate(b.data)));
-            // normaliza exibição dos inputs
+            
             document.getElementById('taxaCdiAnual').value = formatPercent(cdiGlobal);
             document.getElementById('diasAno').value = diasAno;
             let html = "<table><thead><tr><th>Data</th><th>Descrição/Resumo</th><th>Banco</th><th>Conta Cedente</th><th>Conta Cessionário</th><th>Compromissada</th><th>Retorno Bruto</th><th>PU IDA</th><th>PU VOLTA</th><th>Taxa CDI Anual (%)</th><th>Ganho (R$) Diário</th><th class='action-cell'>Ações</th></tr></thead><tbody>";
@@ -607,6 +523,7 @@
                 const d = normalizeDate(op.data);
                 const comp = parseNumber(op.compromissada);
                  const ret = parseNumber(op.retorno);
+                // Lógica para inverter o ganho se for RECOMPRA
                 const ganho = (ret - comp) * ( (typeof op.descricao === 'string' && op.descricao.toUpperCase().includes('RECOMPRA')) ? -1 : 1 );
                 const taxaUsada = (cleanCdiTaxa(op.cdiTaxa) > 0 && cleanCdiTaxa(op.cdiTaxa) !== 100) ? cleanCdiTaxa(op.cdiTaxa) : cdiGlobal;
                 totalCompromissada += comp; totalRetorno += ret; totalGanho += ganho;
@@ -655,8 +572,7 @@
             updateTotalCards();
         }
 
-        // --- LÓGICA DE IMPORTAÇÃO ---
-
+        // --- LÓGICA DE IMPORTAÇÃO (CORRIGIDO) ---
         function handleExcelFile(file) {
             log(`Processando arquivo: ${file.name}`);
             const reader = new FileReader();
@@ -674,7 +590,8 @@
                         return;
                     }
                     
-                    const header = json[0].map(h => String(h).trim().toUpperCase().replace(/[^A-Z0-9]/G, '_'));
+                    // CORREÇÃO: Usando a flag 'g' minúscula para evitar o erro de regex
+                    const header = json[0].map(h => String(h).trim().toUpperCase().replace(/[^A-Z0-9]/g, '_'));
                     const rows = json.slice(1);
 
                     const mapping = {
@@ -724,12 +641,11 @@
                 log('⚠️ Por favor, selecione um ou mais arquivos Excel/CSV ANTES de clicar em "Importar XLSX".');
                 return;
             }
-
-            // Processa todos os arquivos selecionados
+            
             Array.from(files).forEach(handleExcelFile);
         }
 
-        // --- Lógica de Adicionar/Editar Manual ---
+        // Funções de CRUD (MANTIDAS)
         function addOrUpdateOperation(){
             const index = parseInt(document.getElementById('editIndex').value);
             const opData = {
@@ -758,20 +674,17 @@
                 log(`✅ Novo lançamento manual adicionado.`);
             }
 
-            // Limpa o formulário e reseta o modo de edição
             cancelEdit(); 
-
             calculateAndRender();
-            saveState(); // SALVA NA NUVEM APÓS ADIÇÃO/EDIÇÃO
+            saveState(); 
         }
 
-        // --- Lógica de Exclusão ---
         function deleteOperation(index){
             if(!confirm(`Tem certeza que deseja excluir a operação #${index + 1}?`)) return;
             operacoes.splice(index, 1);
             log(`🗑️ Operação #${index + 1} excluída.`);
             calculateAndRender();
-            saveState(); // SALVA NA NUVEM APÓS EXCLUSÃO
+            saveState();
         }
 
         function deleteAllData(){
@@ -779,10 +692,9 @@
             operacoes = [];
             log('🗑️ Todos os dados excluídos. Salvando estado vazio na nuvem...');
             calculateAndRender();
-            saveState(); // SALVA NA NUVEM APÓS EXCLUSÃO TOTAL
+            saveState();
         }
-        
-        // --- Lógica de Edição ---
+
         function editOperation(index){
             const op = operacoes[index];
             document.getElementById('editIndex').value = index;
@@ -792,15 +704,12 @@
             document.getElementById('manualCedente').value = op.contaCedente || '';
             document.getElementById('manualCessionario').value = op.contaCessionario || '';
             document.getElementById('manualCdiTaxa').value = op.cdiTaxa || '';
-            // Converte para string com vírgula para o input
             document.getElementById('manualCompromissada').value = parseNumber(op.compromissada).toFixed(2).replace('.',',');
             document.getElementById('manualRetorno').value = parseNumber(op.retorno).toFixed(2).replace('.',',');
 
             document.getElementById('addBtn').textContent = 'Salvar Alteração';
             document.getElementById('cancelEditBtn').style.display = 'inline-flex';
             log(`✏️ Editando operação #${index + 1}.`);
-            
-            // Rola para o painel de lançamento manual
             document.getElementById('input-panel').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -818,12 +727,9 @@
             document.getElementById('cancelEditBtn').style.display = 'none';
         }
 
-        // Lógica de Exportação
+        // Funções de Exportação/Visualização
         function exportToExcel(){
-            if(operacoes.length === 0){
-                log('⚠️ Não há dados para exportar.');
-                return;
-            }
+            if(operacoes.length === 0){ log('⚠️ Não há dados para exportar.'); return; }
             const dataToExport = operacoes.map(op => {
                 const cdiGlobal = cleanCdiTaxa(document.getElementById('taxaCdiAnual').value);
                 const taxaUsada = (cleanCdiTaxa(op.cdiTaxa) > 0 && cleanCdiTaxa(op.cdiTaxa) !== 100) ? op.cdiTaxa : formatPercent(cdiGlobal);
@@ -841,7 +747,6 @@
                     'PU VOLTA': parseNumber(op.puVolta)
                 };
             });
-
             const ws = XLSX.utils.json_to_sheet(dataToExport);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "GanhosCDI");
@@ -849,50 +754,74 @@
             log('💾 Dados exportados para Excel.');
         }
 
-        // Lógica de Impressão
-        function printReport(){
-            window.print();
-        }
-
-        // Lógica de Filtros
-        function filterData(){
-            calculateAndRender();
-        }
+        function printReport(){ window.print(); }
+        function filterData(){ calculateAndRender(); }
         function resetFilter(){
             document.getElementById('filterStartDate').value = '';
             document.getElementById('filterEndDate').value = '';
             calculateAndRender();
         }
 
-        // ANEXA EVENT LISTENERS (CORRIGIDO PARA SEU LAYOUT DETALHADO)
+        // --- Lógica de Logo (Exemplo - Mantenha a sua lógica completa aqui) ---
+        // Exemplo das funções de logo que precisam estar completas no seu código
+        const logoInput = document.getElementById('logoFile');
+        const siteLogo = document.getElementById('siteLogo');
+        function resetThemeToFixed() {
+            document.documentElement.style.setProperty('--primary', '#0A0A33');
+            document.documentElement.style.setProperty('--secondary', '#C00000');
+        }
+        
+        async function compressImageFile(file, quality = 0.7, maxSize = 600) {
+             return new Promise((resolve, reject) => {
+                 const reader = new FileReader();
+                 reader.onload = () => {
+                     const img = new Image();
+                     img.onload = () => {
+                         const canvas = document.createElement('canvas');
+                         const ratio = Math.min(1, maxSize / Math.max(img.width, img.height));
+                         canvas.width = Math.round(img.width * ratio);
+                         canvas.height = Math.round(img.height * ratio);
+                         const ctx = canvas.getContext('2d');
+                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                         try {
+                             const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                             resolve(dataUrl);
+                         } catch (err) { reject(err); }
+                     };
+                     img.onerror = reject;
+                     img.src = reader.result;
+                 };
+                 reader.onerror = reject;
+                 reader.readAsDataURL(file);
+             });
+         }
+        // --- Fim da Lógica de Logo Exemplo ---
+
+
+        /* =======================================================================
+         * ANEXA EVENT LISTENERS (CORREÇÃO FINAL)
+         * =======================================================================
+         */
         function attachEventListeners() {
-            // Botão de Adicionar/Salvar Lançamento Manual
+            // Botões CRUD e Configuração
             const addBtn = document.getElementById('addBtn');
             if (addBtn) addBtn.addEventListener('click', addOrUpdateOperation);
-            
-            // Botão de Cancelar Edição
             const cancelEditBtn = document.getElementById('cancelEditBtn');
             if (cancelEditBtn) cancelEditBtn.addEventListener('click', cancelEdit);
-            
-            // Botão de Excluir TUDO
             const deleteAllBtn = document.getElementById('deleteAllBtn');
             if (deleteAllBtn) deleteAllBtn.addEventListener('click', deleteAllData);
 
-            // Botão de Exportar
+            // Botões de Exportação/Visualização
             const exportBtn = document.getElementById('exportBtn');
             if (exportBtn) exportBtn.addEventListener('click', exportToExcel);
-
-            // Botão de Imprimir
             const printBtn = document.getElementById('printBtn');
             if (printBtn) printBtn.addEventListener('click', printReport);
-            
-            // Botão de Filtro
             const filterBtn = document.getElementById('filterBtn');
             if (filterBtn) filterBtn.addEventListener('click', filterData);
             const resetFilterBtn = document.getElementById('resetFilterBtn');
             if (resetFilterBtn) resetFilterBtn.addEventListener('click', resetFilter);
             
-            // *** CONEXÃO CORRETA COM O BOTÃO IMPORTAR XLSX ***
+            // CONEXÃO CORRETA COM O BOTÃO IMPORTAR XLSX
             const importExcelBtn = document.getElementById('importExcelBtn');
             if (importExcelBtn) {
                 importExcelBtn.addEventListener('click', triggerExcelImport);
@@ -903,8 +832,43 @@
             if (taxaCdiAnualInput) taxaCdiAnualInput.addEventListener('change', saveState);
             const diasAnoInput = document.getElementById('diasAno');
             if (diasAnoInput) diasAnoInput.addEventListener('change', saveState);
-        }
 
+            // Event Listeners para o Logo
+            if (logoInput) {
+                logoInput.addEventListener('change', async (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if(!file) return;
+                    try {
+                        const compressed = await compressImageFile(file, 0.7, 600);
+                        siteLogo.src = compressed;
+                        siteLogo.style.display = 'block';
+                        localStorage.setItem('cdiLogo', compressed);
+                         log('✅ Logo salvo localmente.');
+                    } catch (err) {
+                        console.error(err);
+                        log('❌ Erro ao processar o logo.');
+                    }
+                    resetThemeToFixed();
+                });
+            }
+            const addLogoBtn = document.getElementById('addLogoBtn');
+            if (addLogoBtn) {
+                addLogoBtn.addEventListener('click', () => {
+                    logoInput.click();
+                });
+            }
+            const removeLogoBtn = document.getElementById('removeLogoBtn');
+            if (removeLogoBtn) {
+                removeLogoBtn.addEventListener('click', ()=>{
+                    if(!confirm('Tem certeza que deseja remover logo salvo e restaurar padrão?')) return;
+                    localStorage.removeItem('cdiLogo');
+                    siteLogo.src = '';
+                    siteLogo.style.display = 'none';
+                    resetThemeToFixed();
+                    log('🗑️ Logo removido. Tema restaurado.');
+                });
+            }
+        }
     </script>
 </body>
 </html>
