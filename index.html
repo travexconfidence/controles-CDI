@@ -2,10 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
-    <title>Controle de Ganhos CDI — Layout Empilhado (Com Login)</title>
+    <title>Controle de Ganhos CDI — Layout Empilhado</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
         :root{
             /* CORES PRINCIPAIS: AZUL MARINHO ESCURO PRIMÁRIO, VERMELHO SECUNDÁRIO */
@@ -159,7 +157,7 @@
         /* Inputs */
         .input-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
         .input-row label{ font-size:13px; color:var(--muted); font-weight:600; display:block; margin-bottom:6px; }
-        input[type="text"], input[type="date"], input[type="password"]{
+        input[type="text"], input[type="date"]{
             padding:8px 10px; border-radius:8px; border:1px solid rgba(15,23,36,0.06); background:#fff; color:var(--text-dark); min-width:120px;
         }
         /* Totals */
@@ -236,7 +234,7 @@
         /* Print */
         @media print{
             body{ background:white; padding:0; color:black; }
-            #input-panel .file-label, #input-panel .logo-label, #deleteAllBtn, #logoutBtn { display:none; }
+            #input-panel .file-label, #input-panel .logo-label, #deleteAllBtn { display:none; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -254,22 +252,7 @@
             <h1>Controle de Ganhos CDI</h1>
         </div>
     </div>
-    
-    <div id="auth-panel" class="card" style="max-width:400px; margin: 20px auto; padding: 20px; display:none;">
-        <h2 style="margin-top:0;">Login de Acesso</h2>
-        <div style="margin-bottom: 10px;">
-            <label for="emailInput">E-mail</label>
-            <input type="text" id="emailInput" placeholder="seu@email.com" style="width: 100%;">
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label for="passwordInput">Senha</label>
-            <input type="password" id="passwordInput" placeholder="******" style="width: 100%;">
-        </div>
-        <button id="loginBtn" class="btn" style="width: 100%;">Entrar</button>
-        <p id="auth-error" style="color: var(--danger); font-size: 12px; margin-top: 10px;"></p>
-        <button id="registerBtn" class="btn small secondary" style="margin-top: 10px; width: 100%;">Criar Conta</button>
-    </div>
-    <div id="top-actions" class="card" role="region" aria-label="Ações principais" style="display: none;">
+    <div id="top-actions" class="card" role="region" aria-label="Ações principais">
         <div id="header-left">
             <div style="font-weight:700;">Resumo Diário</div>
             <div style="font-size:12px;color:var(--muted);">Filtros, importação e ações rápidas</div>
@@ -296,11 +279,9 @@
             <button id="removeLogoBtn" class="btn small" title="Remover">Remover</button>
             
             <button id="deleteAllBtn" class="btn small secondary danger" title="Excluir tudo">🗑️</button>
-
-            <button id="logoutBtn" class="btn small danger" title="Sair da aplicação">Sair</button>
         </div>
     </div>
-    <div id="main-container" style="display: none;">
+    <div id="main-container">
         <div id="results-panel" class="card">
             <h2 style="margin:0 0 8px 0;">📊 Resumo Diário</h2>
             <div class="card filter-card" style="margin-bottom:10px;">
@@ -388,124 +369,12 @@
         </div>
     </div>
     <script>
-        /* ============================================================
-        3. CONFIGURAÇÃO E LÓGICA DE AUTENTICAÇÃO FIREBASE
-        ============================================================
-        */
-        
-        // **!!! PASSO CRÍTICO: SUBSTITUA PELAS SUAS CREDENCIAIS DO PROJETO 'CONTROLE CDI' !!!**
-        const firebaseConfig = {
-  apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8",
-  authDomain: "controle-cdi.firebaseapp.com",
-  projectId: "controle-cdi",
-  storageBucket: "controle-cdi.appspot.com", // <-- corrigido aqui
-  messagingSenderId: "215359645646",
-  appId: "1:215359645646:web:79817657642f77b522ad9f",
-  measurementId: "G-RWM8ESFFQH"
-};
-        
-        // Inicializa o Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // Elementos de Login
-        const authPanel = document.getElementById('auth-panel');
-        const mainContainer = document.getElementById('main-container');
-        const topActions = document.getElementById('top-actions');
-        const emailInput = document.getElementById('emailInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const authError = document.getElementById('auth-error');
-
-        // Funções de controle de visibilidade
-        function showAuthPanel() {
-            if (authPanel) authPanel.style.display = 'block';
-            if (mainContainer) mainContainer.style.display = 'none';
-            if (topActions) topActions.style.display = 'none';
-        }
-
-        function showAppContent() {
-            if (authPanel) authPanel.style.display = 'none';
-            if (mainContainer) mainContainer.style.display = 'flex'; // Seu main-container usa flex-direction: column
-            if (topActions) topActions.style.display = 'flex';
-        }
-        
-        // LÓGICA DE LOGIN
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => {
-                const email = emailInput.value;
-                const password = passwordInput.value;
-                authError.textContent = '';
-                
-                auth.signInWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        // Sucesso: a função onAuthStateChanged cuidará da exibição
-                        log(`✅ Usuário ${userCredential.user.email} logado.`);
-                    })
-                    .catch((error) => {
-                        authError.textContent = `❌ Erro de Login: ${error.message}`;
-                    });
-            });
-        }
-        
-        // LÓGICA DE REGISTRO
-        if (registerBtn) {
-            registerBtn.addEventListener('click', () => {
-                const email = emailInput.value;
-                const password = passwordInput.value;
-                authError.textContent = '';
-
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        // Sucesso: a função onAuthStateChanged cuidará da exibição
-                        log(`🎉 Usuário ${userCredential.user.email} registrado e logado.`);
-                    })
-                    .catch((error) => {
-                        authError.textContent = `❌ Erro de Registro: ${error.message}`;
-                    });
-            });
-        }
-        
-        // LÓGICA DE LOGOUT
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                auth.signOut().then(() => {
-                    log('👋 Usuário deslogado.');
-                }).catch((error) => {
-                    console.error('Erro ao deslogar:', error);
-                });
-            });
-        }
-        
-        // VERIFICADOR DE ESTADO DE AUTENTICAÇÃO (MANTÉM O ESTADO)
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // Usuário logado: Mostra o conteúdo da aplicação
-                showAppContent();
-                // Chama o loadState() original apenas APÓS o login ser confirmado
-                loadStateContent(); 
-            } else {
-                // Usuário deslogado: Mostra o painel de autenticação
-                showAuthPanel();
-                // Limpa o estado da aplicação enquanto não estiver logado
-                document.getElementById('resultTable').innerHTML = '';
-                document.querySelector('#totalCdiDisplay p').textContent = 'R$ 0,00';
-            }
-        });
-        
-        /* ============================================================
-        FIM LÓGICA FIREBASE - CÓDIGO DO APP CDI ABAIXO
-        ============================================================
-        */
-
-        // ---------- Funções utilitárias e lógica ---------- 
+        /* ---------- Funções utilitárias e lógica ---------- */
         function log(message) { document.getElementById('log').textContent = message; }
         
         // Função para manter o tema fixo no Azul Marinho e Vermelho Secundário com Borda Branca
         function resetThemeToFixed() {
-            // ... (função CSS resetThemeToFixed)
+            // Aplica as cores Azul Marinho e Vermelho definidas no CSS :root
             document.documentElement.style.setProperty('--primary', '#0A0A33');
             document.documentElement.style.setProperty('--primary-light', '#1A1A55');
             document.documentElement.style.setProperty('--secondary', '#C00000');
@@ -662,39 +531,19 @@
         
         /* Persistência e estado */
         let operacoes = [], totalCompromissada=0, totalRetorno=0, totalGanho=0;
-        
-        // Salvamento de estado (o prefixo é bom para evitar conflitos se você tiver múltiplos apps)
-        function saveState(){ 
-            // Usa o UID do usuário logado para salvar dados separados para cada um
-            const uid = auth.currentUser ? auth.currentUser.uid : 'anon';
-            try{ 
-                const state={
-                    operacoes, 
-                    taxaCdiAnual:document.getElementById('taxaCdiAnual').value, 
-                    diasAno:document.getElementById('diasAno').value
-                }; 
-                localStorage.setItem(`cdiControlState_${uid}`, JSON.stringify(state)); 
-            }catch(e){ 
-                console.warn(e); 
-            } 
-        }
-
+        function saveState(){ try{ const state={operacoes, taxaCdiAnual:document.getElementById('taxaCdiAnual').value, diasAno:document.getElementById('diasAno').value}; localStorage.setItem('cdiControlState', JSON.stringify(state)); }catch(e){ console.warn(e); } }
         /* Carrega estado e logo salvos */
-        window.loadStateContent = ()=>{
+        window.loadState = ()=>{
             resetThemeToFixed(); // Aplica o tema Azul Marinho e Vermelho Secundário no carregamento
-            const uid = auth.currentUser ? auth.currentUser.uid : 'anon';
             try{
-                const s = localStorage.getItem(`cdiControlState_${uid}`);
+                const s = localStorage.getItem('cdiControlState');
                 if(s){
                     const st = JSON.parse(s);
                     operacoes = st.operacoes || [];
                     document.getElementById('taxaCdiAnual').value = st.taxaCdiAnual || '14,90';
                     document.getElementById('diasAno').value = st.diasAno || '252';
-                    log(`💾 ${operacoes.length} operações carregadas para o usuário ${uid}.`);
-                } else {
-                    operacoes = [];
-                    log('Aguardando... Não há dados salvos para este usuário.');
-                }
+                    log(`💾 ${operacoes.length} operações carregadas.`);
+                } else log('Aguardando... Não há dados salvos.');
             }catch(e){ operacoes=[]; log('❌ Erro ao carregar dados.'); }
             try {
                 const savedLogo = localStorage.getItem('cdiLogo');
@@ -708,13 +557,6 @@
             attachFilterListeners();
             calculateAndRender();
         };
-
-        // Chama apenas o resetThemeToFixed no carregamento inicial da página
-        window.loadState = ()=>{
-            resetThemeToFixed();
-        };
-
-
         /* Renderização */
         function updateTotalCards(){ document.querySelector('#totalCompromissadaDisplay p').textContent = formatBRL(totalCompromissada); document.querySelector('#totalRetornoDisplay p').textContent = formatBRL(totalRetorno); document.querySelector('#totalCdiDisplay p').textContent = formatBRL(totalGanho); }
         function calculateAndRender(){
@@ -746,7 +588,6 @@
                 const d = normalizeDate(op.data);
                 const comp = parseNumber(op.compromissada); 
                 const ret = parseNumber(op.retorno);
-                // CÁLCULO DO GANHO COM AJUSTE PARA RECOMPRA
                 const ganho = (ret - comp) * ( (typeof op.descricao === 'string' && op.descricao.toUpperCase().includes('RECOMPRA')) ? -1 : 1 );
                 const taxaUsada = (cleanCdiTaxa(op.cdiTaxa) > 0 && cleanCdiTaxa(op.cdiTaxa) !== 100) ? cleanCdiTaxa(op.cdiTaxa) : cdiGlobal;
                 totalCompromissada += comp; totalRetorno += ret; totalGanho += ganho;
@@ -768,7 +609,7 @@
                         <td class="${ganhoClass}">${formatBRL(ganho)}</td>
                         <td class="action-cell">
                             <button class="btn small" onclick="editOperation(${operacoes.indexOf(op)})">Alterar</button>
-                            <button class="btn small secondary danger" onclick="deleteOperation(${operacoes.indexOf(op)})">Excluir</button>
+                            <button class="btn small secondary" onclick="deleteOperation(${operacoes.indexOf(op)})">Excluir</button>
                         </td>
                     </tr>`;
                 }
@@ -779,135 +620,251 @@
                 const r = resumo[k];
                 const ganhoClass = r.totalGanho>0 ? 'ganho' : (r.totalGanho<0 ? 'perda' : ''); 
                 const taxaExib = (cleanCdiTaxa(r.primeiraTaxa) > 0 ? r.primeiraTaxa : cleanCdiTaxa(document.getElementById('taxaCdiAnual').value));
-                html += `<tr class="daily-summary-row" style="background:rgba(0,0,0,0.05);font-weight:700;">
-                        <td class="col-data">${formatDataBR(r.data)}</td>
-                        <td class="col-left" colspan="4">Total do Dia</td>
-                        <td>${formatBRL(r.totalCompromissada)}</td>
-                        <td>${formatBRL(r.totalRetorno)}</td>
-                        <td colspan="2">-</td>
-                        <td style="text-align:center;">${(Number(taxaExib)||0).toFixed(4).replace('.',',')}</td>
-                        <td class="${ganhoClass}">${formatBRL(r.totalGanho)}</td>
-                        <td class="action-cell">-</td>
-                    </tr>`;
+                html += `<tr class="daily-summary-row">
+                    <td class="col-data">${formatDataBR(r.data)}</td>
+                    <td class="col-left">Soma Diária</td>
+                    <td class="col-left">-</td><td>-</td><td>-</td>
+                    <td>${formatBRL(r.totalCompromissada)}</td>
+                    <td>${formatBRL(r.totalRetorno)}</td>
+                    <td>-</td><td>-</td><td style="text-align:center;">${(Number(taxaExib)||0).toFixed(4).replace('.',',')}</td>
+                    <td class="${ganhoClass}">${formatBRL(r.totalGanho)}</td>
+                    <td class="action-cell">-</td>
+                </tr>`;
             });
-
-            // FINALIZAÇÃO DA FUNÇÃO
+            const totalClass = totalGanho>0 ? 'ganho' : (totalGanho<0 ? 'perda' : '');
+            html += `<tr class="total-row">
+                <td colspan="5">TOTAL GERAL</td>
+                <td>${formatBRL(totalCompromissada)}</td>
+                <td>${formatBRL(totalRetorno)}</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td class="${totalClass}" style="font-weight:800;">${formatBRL(totalGanho)}</td>
+                <td class="action-cell"></td>
+            </tr>`;
             html += "</tbody></table>";
             document.getElementById('resultTable').innerHTML = html;
             updateTotalCards();
-            saveState(); // Salva o estado após a renderização
+            saveState();
+            log(`✅ ${ops.length} operações exibidas em ${datas.length} dias.`);
         }
-
-        // ----------------------------------------------------
-        // Lógica CRUD (Adicionar, Editar, Deletar, Filtros)
-        // ----------------------------------------------------
-        
-        // Adicionando listeners de filtro (parte que faltava)
-        function attachFilterListeners() {
+        /* Edição / exclusão / listeners (mantidos) */
+        function editOperation(index){
+            const op = operacoes[index];
+            document.getElementById('manualData').value = normalizeDate(op.data);
+            document.getElementById('manualDesc').value = op.descricao || '';
+            document.getElementById('manualBanco').value = op.banco || '';
+            document.getElementById('manualCedente').value = op.contaCedente || '';
+            document.getElementById('manualCessionario').value = op.contaCessionario || '';
+            document.getElementById('manualCompromissada').value = formatNumberToDisplay(parseNumber(op.compromissada));
+            document.getElementById('manualRetorno').value = formatNumberToDisplay(parseNumber(op.retorno));
+            document.getElementById('manualCdiTaxa').value = op.cdiTaxa ? String(op.cdiTaxa).replace('.',',') : '';
+            document.getElementById('editIndex').value = index;
+            document.getElementById('addBtn').textContent = 'Salvar Alteração';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            log(`📝 Editando índice ${index}.`);
+            document.getElementById('manualData').scrollIntoView({behavior:'smooth'});
+        }
+        function deleteOperation(index){
+            if(!confirm('Tem certeza que deseja excluir este lançamento?')) return;
+            operacoes.splice(index,1);
+            calculateAndRender();
+            log('🗑️ Lançamento excluído.');
+        }
+        /* Add / cancel */
+        function formatNumberToDisplay(number){ if(number===undefined||number===null||isNaN(number)) return ''; return number.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+        document.getElementById('addBtn').addEventListener('click', ()=>{
+            const idx = parseInt(document.getElementById('editIndex').value || '-1',10);
+            const data = document.getElementById('manualData').value;
+            const desc = document.getElementById('manualDesc').value || 'Lançamento Manual';
+            const banco = document.getElementById('manualBanco').value || '';
+            const ced = document.getElementById('manualCedente').value || '';
+            const cession = document.getElementById('manualCessionario').value || '';
+            const comp = document.getElementById('manualCompromissada').value;
+            const ret = document.getElementById('manualRetorno').value;
+            const taxa = document.getElementById('manualCdiTaxa').value || '';
+            if(!data || !comp || !ret){ alert('Preencha Data, Compromissada e Retorno Bruto.'); return; }
+            const obj = { data: normalizeDate(data), descricao: desc, banco, contaCedente: ced, contaCessionario: cession, compromissada: comp, retorno: ret, cdiTaxa: taxa, puIda:'', puVolta:'' };
+            if(idx > -1){ operacoes[idx] = { ...operacoes[idx], ...obj }; log(`✏️ Lançamento ${idx} atualizado.`); document.getElementById('cancelEditBtn').click(); }
+            else { operacoes.push(obj); log('➕ Lançamento adicionado.'); document.getElementById('manualData').value=''; document.getElementById('manualDesc').value=''; document.getElementById('manualBanco').value=''; document.getElementById('manualCedente').value=''; document.getElementById('manualCessionario').value=''; document.getElementById('manualCompromissada').value=''; document.getElementById('manualRetorno').value=''; document.getElementById('manualCdiTaxa').value=''; }
+            calculateAndRender();
+        });
+        document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
+            document.getElementById('editIndex').value='-1';
+            document.getElementById('manualData').value=''; document.getElementById('manualDesc').value=''; document.getElementById('manualBanco').value=''; document.getElementById('manualCedente').value=''; document.getElementById('manualCessionario').value=''; document.getElementById('manualCompromissada').value=''; document.getElementById('manualRetorno').value=''; document.getElementById('manualCdiTaxa').value='';
+            document.getElementById('addBtn').textContent='Adicionar Lançamento';
+            document.getElementById('cancelEditBtn').style.display='none';
+            log('❌ Edição cancelada.');
+        });
+        /* Import / export / print / delete all */
+        const fileInput = document.getElementById('excelFile');
+        const loadBtn = document.getElementById('loadExcelBtn');
+        function attachFilterListeners(){
             document.getElementById('filterBtn').addEventListener('click', calculateAndRender);
-            document.getElementById('resetFilterBtn').addEventListener('click', () => {
+            document.getElementById('resetFilterBtn').addEventListener('click', ()=>{
                 document.getElementById('filterStartDate').value = '';
                 document.getElementById('filterEndDate').value = '';
                 calculateAndRender();
             });
+            document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+            document.getElementById('deleteAllBtn').addEventListener('click', ()=>{
+                if(!confirm('Tem certeza que deseja EXCLUIR TODOS os lançamentos? Esta ação não pode ser desfeita.')) return;
+                operacoes = [];
+                localStorage.removeItem('cdiControlState');
+                calculateAndRender();
+                log('💥 Todos os dados excluídos.');
+            });
         }
         
-        // Função de Adicionar Lançamento
-        function addOperation() {
-            const data = document.getElementById('manualData').value;
-            const desc = document.getElementById('manualDesc').value;
-            const comp = document.getElementById('manualCompromissada').value;
-            const ret = document.getElementById('manualRetorno').value;
+        if (loadBtn) loadBtn.disabled = true;
+        if (fileInput) {
+            fileInput.addEventListener('change', (e)=>{ if (loadBtn) loadBtn.disabled = !(e.target.files && e.target.files.length); if(e.target.files && e.target.files.length) log(`📁 ${e.target.files.length} arquivo(s) selecionado(s).`); else log('Aguardando seleção de arquivo...'); });
+        }
+        
+        async function loadExcel(file){
+            const ext = file.name.split('.').pop().toLowerCase();
+            if(ext==='xlsx' || ext==='xls'){
+                const data = await file.arrayBuffer();
+                const wb = XLSX.read(data,{type:'array'});
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                return XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true});
+            } else {
+                return await new Promise((resolve,reject)=>{
+                    Papa.parse(file,{header:false,skipEmptyLines:true,delimiter:'auto',encoding:'utf-8',complete:r=>resolve(r.data),error:e=>reject(e)});
+                });
+            }
+        }
+        function findColumnIndices(data){
+            const headerRow = data.find(row => Array.isArray(row) && row.some(cell => typeof cell === 'string' && (cell.toUpperCase().includes('DT.MOVIMENTO') || cell.toUpperCase().includes('VL IDA') || cell.toUpperCase().includes('TAXA'))));
+            if(!headerRow){ log('⚠️ Cabeçalho não encontrado. Usando índices padrão.'); return { DATA:8, DESCRICAO:3, TAXA:19, RETORNO:11, COMPROMISSADA:15, BANCO:14, CEDENTE:-1, CESSIONARIO:-1, PU_IDA:-1, PU_VOLTA:-1, dataStartRow:0 }; }
+            const headers = headerRow.map(h => typeof h === 'string' ? h.toUpperCase().trim() : '');
+            const map = {
+                DATA: headers.findIndex(h => h.includes('DT.MOVIMENTO') || h.includes('DT.INÍCIO') || h==='DATA'),
+                TAXA: headers.findIndex(h => h==='TX. 252'),
+                DESCRICAO: headers.findIndex(h => h.includes('PAPEL') || h.includes('PRODUTO') || h.includes('TIPO OPERAÇÃO')),
+                RETORNO: headers.findIndex(h => h.includes('VALOR LÍQUIDO') || h.includes('VL VOLTA') || h==='VALOR'),
+                COMPROMISSADA: headers.findIndex(h => h.includes('VL IDA') || h==='VALOR'),
+                BANCO: headers.findIndex(h => h.includes('CONTRAPARTE') || h.includes('CLIENTE')),
+                CEDENTE: headers.findIndex(h => h.includes('CEDENTE') && h.includes('CONTA')),
+                CESSIONARIO: headers.findIndex(h => h.includes('CESSIONÁRIO') && h.includes('CONTA')),
+                PU_IDA: headers.findIndex(h => h.includes('PU IDA')),
+                PU_VOLTA: headers.findIndex(h => h.includes('PU VOLTA'))
+            };
+            const indices = {
+                DATA: map.DATA > -1 ? map.DATA : 3,
+                DESCRICAO: map.DESCRICAO > -1 ? map.DESCRICAO : 1,
+                TAXA: map.TAXA > -1 ? map.TAXA : 10,
+                RETORNO: map.RETORNO > -1 ? map.RETORNO : 7,
+                COMPROMISSADA: map.COMPROMISSADA > -1 ? map.COMPROMISSADA : 6,
+                BANCO: map.BANCO > -1 ? map.BANCO : 2,
+                CEDENTE: map.CEDENTE > -1 ? map.CEDENTE : 12,
+                CESSIONARIO: map.CESSIONARIO > -1 ? map.CESSIONARIO : 13,
+                PU_IDA: map.PU_IDA > -1 ? map.PU_IDA : 4,
+                PU_VOLTA: map.PU_VOLTA > -1 ? map.PU_VOLTA : 5,
+                dataStartRow: data.indexOf(headerRow) > -1 ? data.indexOf(headerRow) + 1 : 0
+            };
+            log(`Mapeamento: Data=${indices.DATA}, Comp=${indices.COMPROMISSADA}, Ret=${indices.RETORNO}, Taxa=${indices.TAXA}.`);
+            return indices;
+        }
+        function processExcel(data){
+            if(!data || data.length<1){ log('❌ Arquivo vazio.'); return []; }
+            const indices = findColumnIndices(data);
+            const start = indices.dataStartRow || 0;
+            let valid=0; const newOps = [];
+            for(let i=start; i<data.length; i++){
+                const row = data[i];
+                const rawComp = row[indices.COMPROMISSADA];
+                const rawRet = row[indices.RETORNO];
+                const rawData = row[indices.DATA];
+                // Ignorar linhas sem compromissada ou retorno válidos
+                if(parseNumber(rawComp) === 0 && parseNumber(rawRet) === 0) continue; 
+                
+                const dataFormatada = normalizeDate(rawData);
+                if(!dataFormatada) continue; // Ignorar linhas sem data válida
+                
+                newOps.push({
+                    data: dataFormatada,
+                    descricao: String(row[indices.DESCRICAO] || ''),
+                    banco: String(row[indices.BANCO] || ''),
+                    contaCedente: String(row[indices.CEDENTE] || ''),
+                    contaCessionario: String(row[indices.CESSIONARIO] || ''),
+                    compromissada: String(rawComp || ''),
+                    retorno: String(rawRet || ''),
+                    cdiTaxa: String(row[indices.TAXA] || ''),
+                    puIda: String(row[indices.PU_IDA] || ''),
+                    puVolta: String(row[indices.PU_VOLTA] || '')
+                });
+                valid++;
+            }
+            log(`✅ ${valid} operações válidas encontradas e prontas para importação.`);
+            return newOps;
+        }
+        
+        loadExcelBtn.addEventListener('click', async () => {
+            const files = fileInput.files;
+            if (files.length === 0) return;
+            
+            log(`⏳ Processando ${files.length} arquivo(s)...`);
+            let totalNewOps = [];
+            
+            for (const file of files) {
+                try {
+                    const data = await loadExcel(file);
+                    const newOps = processExcel(data);
+                    totalNewOps = totalNewOps.concat(newOps);
+                    log(`📁 Arquivo "${file.name}" processado. ${newOps.length} operações encontradas.`);
+                } catch (e) {
+                    console.error(e);
+                    log(`❌ Erro ao processar o arquivo "${file.name}".`);
+                }
+            }
+            
+            if (totalNewOps.length > 0) {
+                operacoes = operacoes.concat(totalNewOps);
+                calculateAndRender();
+                log(`🎉 Importação concluída! ${totalNewOps.length} novas operações adicionadas. Total: ${operacoes.length}.`);
+            } else {
+                log('⚠️ Nenhuma nova operação válida encontrada nos arquivos selecionados.');
+            }
+            // Limpa os arquivos selecionados
+            fileInput.value = '';
+            loadBtn.disabled = true;
+        });
 
-            if (!data || !desc || !comp || !ret) {
-                alert('Preencha os campos obrigatórios (Data, Descrição, Compromissada e Retorno).');
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            if(operacoes.length === 0) {
+                alert('Não há dados para exportar.');
                 return;
             }
 
-            const newOp = {
-                data: data,
-                descricao: desc,
-                banco: document.getElementById('manualBanco').value,
-                contaCedente: document.getElementById('manualCedente').value,
-                contaCessionario: document.getElementById('manualCessionario').value,
-                cdiTaxa: document.getElementById('manualCdiTaxa').value,
-                compromissada: comp,
-                retorno: ret,
-                puIda: '', // Simplificado
-                puVolta: '' // Simplificado
-            };
+            const header = [
+                'Data', 'Descricao', 'Banco', 'Conta Cedente', 'Conta Cessionario', 
+                'Compromissada', 'Retorno Bruto', 'PU Ida', 'PU Volta', 'Taxa CDI Anual (%)'
+            ];
 
-            const editIndex = parseInt(document.getElementById('editIndex').value);
-            if (editIndex > -1) {
-                operacoes[editIndex] = newOp;
-                document.getElementById('editIndex').value = '-1';
-                document.getElementById('addBtn').textContent = 'Adicionar Lançamento';
-                document.getElementById('cancelEditBtn').style.display = 'none';
-                log('✅ Lançamento alterado com sucesso.');
-            } else {
-                operacoes.push(newOp);
-                log('✅ Lançamento adicionado com sucesso.');
-            }
+            const exportData = operacoes.map(op => {
+                const taxa = cleanCdiTaxa(op.cdiTaxa);
+                return [
+                    formatDataBR(op.data),
+                    op.descricao,
+                    op.banco,
+                    op.contaCedente,
+                    op.contaCessionario,
+                    parseNumber(op.compromissada),
+                    parseNumber(op.retorno),
+                    parseNumber(op.puIda),
+                    parseNumber(op.puVolta),
+                    taxa
+                ];
+            });
 
-            // Limpar formulário
-            document.querySelectorAll('#input-panel input[type="text"], #input-panel input[type="date"]').forEach(input => input.value = '');
-            calculateAndRender();
-        }
-
-        // Conectar o botão Adicionar/Alterar
-        document.getElementById('addBtn').addEventListener('click', addOperation);
-        
-        // Exemplo de Delete
-        function deleteOperation(index) {
-            if (confirm('Tem certeza que deseja excluir esta operação?')) {
-                operacoes.splice(index, 1);
-                calculateAndRender();
-                log('🗑️ Operação excluída.');
-            }
-        }
-        window.deleteOperation = deleteOperation; // Torna global para o HTML
-
-        // Exemplo de Edit
-        function editOperation(index) {
-            const op = operacoes[index];
-            document.getElementById('manualData').value = normalizeDate(op.data);
-            document.getElementById('manualDesc').value = op.descricao;
-            document.getElementById('manualBanco').value = op.banco;
-            document.getElementById('manualCedente').value = op.contaCedente;
-            document.getElementById('manualCessionario').value = op.contaCessionario;
-            document.getElementById('manualCdiTaxa').value = op.cdiTaxa;
-            document.getElementById('manualCompromissada').value = op.compromissada;
-            document.getElementById('manualRetorno').value = op.retorno;
-
-            document.getElementById('editIndex').value = index;
-            document.getElementById('addBtn').textContent = 'Salvar Alteração';
-            document.getElementById('cancelEditBtn').style.display = 'inline-flex';
-            log('📝 Modo de Edição Ativo.');
-        }
-        window.editOperation = editOperation; // Torna global para o HTML
-        
-        // Conectar o Cancelar Edição
-        document.getElementById('cancelEditBtn').addEventListener('click', () => {
-            document.getElementById('editIndex').value = '-1';
-            document.getElementById('addBtn').textContent = 'Adicionar Lançamento';
-            document.getElementById('cancelEditBtn').style.display = 'none';
-            document.querySelectorAll('#input-panel input[type="text"], #input-panel input[type="date"]').forEach(input => input.value = '');
-            log('❌ Edição cancelada.');
+            const ws = XLSX.utils.aoa_to_sheet([header, ...exportData]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Ganhos CDI");
+            
+            const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            XLSX.writeFile(wb, `Controle_Ganhos_CDI_${hoje}.xlsx`);
+            log('💾 Dados exportados para Excel.');
         });
-        
-        // Excluir Tudo
-        document.getElementById('deleteAllBtn').addEventListener('click', () => {
-            if(confirm('ATENÇÃO: Você tem certeza que deseja excluir TODAS as operações salvas? Essa ação não pode ser desfeita.')) {
-                operacoes = [];
-                calculateAndRender();
-                log('🗑️ Todos os dados foram excluídos.');
-            }
-        });
-        
-        // Lógica de Importação/Exportação (mantidas, mas não detalhadas)
-        // ... (Seu código de importação PapaParse/SheetJS/Exportação XLSX ficaria aqui)
         
     </script>
 </body>
 </html>
-
