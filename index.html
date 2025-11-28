@@ -9,10 +9,8 @@
             /* CORES PRINCIPAIS: AZUL MARINHO ESCURO PRIMÁRIO, VERMELHO SECUNDÁRIO */
             --primary: #0A0A33;  /* Azul Marinho Escuro */
             --primary-light: #1A1A55; /* Versão mais clara para gradiente/hover */
-            
             --secondary: #C00000; /* Vermelho Forte (Secundário/Destaque) */
             --secondary-light: #E00000; /* Vermelho Claro para gradiente/hover */
-            
             --danger: #c62828;  /* Mantido para ações de exclusão */
             --bg-start: #f4f8fb;
             --bg-end: #eef6fb;
@@ -34,41 +32,41 @@
             -webkit-font-smoothing:antialiased;
             font-size:14px;
         }
-        
+
         /* Ajuste do Logo e Título para ficarem à esquerda e alinhados */
-        #siteLogo{ 
-            display:block; /* Muda para block */
-            max-width:140px; 
-            width:100%; 
-            height:auto; 
-            border-radius:6px; 
-            box-shadow:var(--shadow); 
-            margin:0 0 6px 0; /* Remove margem automática, alinha à esquerda */
+        #siteLogo{
+             display:block; /* Muda para block */
+            max-width:140px;
+             width:100%;
+             height:auto;
+             border-radius:6px;
+             box-shadow:var(--shadow);
+             margin:0 0 6px 0; /* Remove margem automática, alinha à esquerda */
         }
         #logo-wrapper{ /* Este se torna desnecessário, mas o mantive no HTML abaixo para o logo */
             margin-bottom:8px;
         }
-        
+
         /* Header */
-        #header-container{ 
-            display:flex; 
-            align-items:center; 
-            gap:10px; 
-            margin-bottom:8px; 
-            /* Para manter o contêiner à esquerda se o logo estiver no topo */
-            width: fit-content; 
-        }
-        
-        #logo-placeholder{ font-size:1.4rem; color:var(--primary); } 
-        h1{ margin:0; color:var(--text-dark); font-size:1.25rem; font-weight:700; }
-        
+        #header-container{
+             display:flex;
+             align-items:center;
+             gap:10px;
+             margin-bottom:8px;
+             /* Para manter o contêiner à esquerda se o logo estiver no topo */
+            width: fit-content;
+         }
+
+        #logo-placeholder{ font-size:1.4rem; color:var(--primary); }
+         h1{ margin:0; color:var(--text-dark); font-size:1.25rem; font-weight:700; }
+
         /* Contêiner para logo e título juntos */
         #left-header-content {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         /* Top actions compacto */
         #top-actions{
             display:flex; align-items:center; gap:10px; padding:10px;
@@ -77,7 +75,6 @@
         }
         #header-left{ display:flex; align-items:center; gap:10px; }
         #header-right{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-
         /* --------------- BOTÕES SÓLIDOS COM CONTORNO BRANCO (ESTILO TRAVELEX) --------------- */
         .btn {
             display: inline-flex;
@@ -89,7 +86,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s ease;
-            
+
             /* Estilo Padrão (AZUL MARINHO): Fundo Primary, Texto Branco, Borda Branca */
             background: var(--primary); /* Fundo Azul Marinho */
             color: white; /* Texto Branco */
@@ -102,17 +99,15 @@
             color: white; /* Texto Branco */
             border: 1px solid white; /* Borda Branca Sólida */
         }
-
-        .btn.small { 
-            padding: 6px 10px; 
-            font-size: 13px; 
-            border-radius: 7px; 
-        }
-
-        .btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-            background: var(--primary-light); /* Ligeiramente mais claro no hover */
+        .btn.small {
+             padding: 6px 10px;
+             font-size: 13px;
+             border-radius: 7px;
+         }
+        .btn:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+             background: var(--primary-light); /* Ligeiramente mais claro no hover */
             border-color: white; /* Mantém a borda branca */
         }
         .btn.secondary:hover {
@@ -120,28 +115,24 @@
             border-color: white; /* Mantém a borda branca */
             box-shadow: 0 8px 20px rgba(192, 0, 0, 0.25);
         }
-
-        .btn:active { 
-            transform: none; 
-            filter: brightness(0.96); 
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        .btn:active {
+             transform: none;
+             filter: brightness(0.96);
+             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
-
-        /* O botão danger é usado no delete, mas como você quer ele VERMELHO (secondary), 
-           ele usará o estilo .btn.secondary, com uma pequena variação de cor */
-        .btn.danger { 
-            background: var(--secondary); 
-            color: white; 
-            border: 1px solid white; 
-            box-shadow: 0 4px 10px rgba(198, 40, 40, 0.25);
+        /* O botão danger é usado no delete, mas como você quer ele VERMELHO (secondary),
+            ele usará o estilo .btn.secondary, com uma pequena variação de cor */
+        .btn.danger {
+             background: var(--secondary);
+             color: white;
+             border: 1px solid white;
+             box-shadow: 0 4px 10px rgba(198, 40, 40, 0.25);
         }
-        .btn.danger:hover { 
-            filter: brightness(0.85); 
-            border-color: white; 
-        }
+        .btn.danger:hover {
+             filter: brightness(0.85);
+             border-color: white;
+         }
         /* ----------------------------------------------------------- */
-
-
         /* Layout empilhado: resultados em cima, painel embaixo */
         #main-container{
             display:flex;
@@ -181,48 +172,44 @@
         tbody tr:nth-child(even){ background: rgba(0,0,0,0.02); }
         td:first-child, th:first-child{ text-align:center; width:90px; }
         /* Descrição/Resumo usa o novo primary (Azul Marinho) */
-        .col-left{ 
-            text-align:left; 
-            max-width:260px; 
-            overflow:hidden; 
-            text-overflow:ellipsis; 
-            white-space:nowrap; 
-            color: var(--primary); 
-            font-weight: 600;
+        .col-left{
+             text-align:left;
+             max-width:260px;
+             overflow:hidden;
+             text-overflow:ellipsis;
+             white-space:nowrap;
+             color: var(--primary);
+             font-weight: 600;
         }
         /* Ações compactas */
         .action-cell{ text-align:center; }
-        
+
         /* --------------- GANHO/PERDA (BADGE) E NEGRITO GERAL --------------- */
         /* Estilo de Badge aplicado ao conteúdo da TD */
-        .ganho, .perda { 
-            font-weight: 800; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            display: inline-block; 
-            min-width: 60px; 
-            text-align: center;
+        .ganho, .perda {
+             font-weight: 800;
+             padding: 2px 6px;
+             border-radius: 4px;
+             display: inline-block;
+             min-width: 60px;
+             text-align: center;
         }
-
-        .ganho { 
-            color: var(--success) !important;
-            background: rgba(46, 125, 50, 0.1); 
-            border: 1px solid rgba(46, 125, 50, 0.2);
+        .ganho {
+             color: var(--success) !important;
+            background: rgba(46, 125, 50, 0.1);
+             border: 1px solid rgba(46, 125, 50, 0.2);
         }
-
-        .perda { 
-            color: var(--danger) !important; 
-            background: rgba(198, 40, 40, 0.1); 
-            border: 1px solid rgba(198, 40, 40, 0.2);
+        .perda {
+             color: var(--danger) !important;
+             background: rgba(198, 40, 40, 0.1);
+             border: 1px solid rgba(198, 40, 40, 0.2);
         }
         /* Estilo para b/strong em geral */
         b, strong {
-            font-weight: 800; 
-            color: var(--primary); /* Negrito no Azul Marinho do tema */
+            font-weight: 800;
+             color: var(--primary); /* Negrito no Azul Marinho do tema */
         }
         /* ------------------------------------------------------------------- */
-
-
         /* Responsive */
         @media (max-width:980px){
             /* Centraliza em telas pequenas */
@@ -242,7 +229,6 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body onload="loadState()">
-    
     <div id="logo-wrapper">
         <img id="siteLogo" alt="Logo do site">
     </div>
@@ -259,25 +245,28 @@
         </div>
         <div id="header-right">
             <button id="printBtn" class="btn small" title="Imprimir">Imprimir</button>
-            
-            <button id="exportBtn" class="btn small secondary" title="Exportar">Exportar</button>
-            
+
+            <button id="exportBtn" class="btn small secondary" title="Exportar para Excel">Exportar XLS</button>
+            <button id="exportJsonBtn" class="btn small" title="Exportar Dados JSON">Dados JSON</button>
+
             <label class="file-label" for="excelFile" title="Selecionar arquivos">
                 <input type="file" id="excelFile" accept=".xlsx,.xls,.csv,.txt" multiple>
-                <span class="btn small">Procurar</span>
+                <span class="btn small">Procurar XLSX</span>
             </label>
+            <button id="loadExcelBtn" class="btn small secondary" title="Importar arquivos">Importar XLSX</button>
             
-            <button id="loadExcelBtn" class="btn small secondary" title="Importar arquivos">Importar</button>
+            <label class="file-label" for="jsonFile" title="Importar Dados JSON">
+                <input type="file" id="jsonFile" accept=".json">
+                <span class="btn small">Procurar JSON</span>
+            </label>
+            <button id="loadJsonBtn" class="btn small secondary" title="Carregar Dados JSON">Importar JSON</button>
             
             <label class="logo-label" for="logoFile" title="Carregar logo">
                 <input type="file" id="logoFile" accept="image/*">
                 <span class="btn small">Procurar</span>
             </label>
-            
-            <button id="addLogoBtn" class="btn small secondary" title="Carregar Logo">Carregar Logo</button> 
-            
+            <button id="addLogoBtn" class="btn small secondary" title="Carregar Logo">Carregar Logo</button>
             <button id="removeLogoBtn" class="btn small" title="Remover">Remover</button>
-            
             <button id="deleteAllBtn" class="btn small secondary danger" title="Excluir tudo">🗑️</button>
         </div>
     </div>
@@ -339,7 +328,7 @@
             <div>
                 <h3 style="margin:0 0 8px 0;">📂 Importação</h3>
                 <p style="font-size:12px;color:var(--muted);margin:0 0 10px 0;">
-                    *O sistema tenta reconhecer os cabeçalhos, priorizando 'TX. 252' para a taxa CDI.
+                    *O sistema tenta reconhecer os cabeçalhos. Use **Importar JSON** para carregar dados salvos.
                 </p>
             </div>
             <hr style="border:none;border-top:1px solid rgba(15,23,36,0.04);margin:12px 0;">
@@ -371,38 +360,33 @@
     <script>
         /* ---------- Funções utilitárias e lógica ---------- */
         function log(message) { document.getElementById('log').textContent = message; }
-        
+
         // Função para manter o tema fixo no Azul Marinho e Vermelho Secundário com Borda Branca
         function resetThemeToFixed() {
-            // Aplica as cores Azul Marinho e Vermelho definidas no CSS :root
+            // Aplica as cores fixas
             document.documentElement.style.setProperty('--primary', '#0A0A33');
             document.documentElement.style.setProperty('--primary-light', '#1A1A55');
             document.documentElement.style.setProperty('--secondary', '#C00000');
             document.documentElement.style.setProperty('--secondary-light', '#E00000');
-            
-            // Reaplica o estilo SÓLIDO com borda branca para botões primários
+
+            // Reaplica o estilo SÓLIDO com borda branca para botões
             document.querySelectorAll('.btn:not(.secondary):not(.danger)').forEach(b => {
                 b.style.background = 'var(--primary)';
                 b.style.border = '1px solid white';
                 b.style.color = 'white';
             });
-            
-            // Reaplica o estilo SÓLIDO com borda branca para botões secundários
             document.querySelectorAll('.btn.secondary').forEach(b => {
                 b.style.background = 'var(--secondary)';
                 b.style.border = '1px solid white';
                 b.style.color = 'white';
             });
-            
-            // Garante que o danger button está com a cor e borda corretas (Vermelho)
             document.querySelectorAll('.btn.danger').forEach(b=>{
-                b.style.background = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(); // Usa secondary para o vermelho
+                b.style.background = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim();
                 b.style.color = '#ffffff';
                 b.style.border = '1px solid white';
             });
         }
 
-        /* Compressão e extração de cor média (Mantida apenas para carregar o logo) */
         const logoInput = document.getElementById('logoFile');
         const siteLogo = document.getElementById('siteLogo');
         async function compressImageFile(file, quality = 0.7, maxSize = 600) {
@@ -429,29 +413,24 @@
                 reader.readAsDataURL(file);
             });
         }
-        
+
         if (logoInput) {
-            
-            // Lógica para salvar a imagem quando o arquivo é selecionado
             logoInput.addEventListener('change', async (e) => {
                 const file = e.target.files && e.target.files[0];
                 if(!file) return;
-                
+
                 try {
                     const compressed = await compressImageFile(file, 0.7, 600);
                     siteLogo.src = compressed;
                     siteLogo.style.display = 'block';
-                    localStorage.setItem('cdiLogo', compressed); 
-                    log('✅ Logo salvo localmente.');
+                    localStorage.setItem('cdiLogo', compressed);
+                     log('✅ Logo salvo localmente.');
                 } catch (err) {
                     console.error(err);
                     log('❌ Erro ao processar o logo.');
                 }
-
                 resetThemeToFixed();
             });
-
-             // O botão 'Carregar Logo' apenas aciona o clique no input file
              const addLogoBtn = document.getElementById('addLogoBtn');
              if (addLogoBtn) {
                  addLogoBtn.addEventListener('click', () => {
@@ -470,71 +449,68 @@
                 log('🗑️ Logo removido. Tema restaurado.');
             });
         }
-
-
         // --- Funções de processamento de dados (mantidas como estão) ---
-        function cleanCurrency(v){ 
-            if(typeof v!=='string') v=String(v); 
-            let cleanString = v.replace(/[R$\s]/g, '');
+        function cleanCurrency(v){
+             if(typeof v!=='string') v=String(v);
+             let cleanString = v.replace(/[R$\s]/g, '');
             cleanString = cleanString.replace(/\./g, '');
             cleanString = cleanString.replace(/,/g, '.');
-            const n=parseFloat(cleanString); 
-            return isNaN(n)?0:n; 
-        }
+            const n=parseFloat(cleanString);
+             return isNaN(n)?0:n;
+         }
+        function parseNumber(v){
+             if(v===undefined||v===null||v==='') return 0;
+             if(typeof v==='string' && (v.includes(',') || v.includes('R$'))) return cleanCurrency(v);
+             const n=parseFloat(v);
+             return isNaN(n)?0:n;
+         }
 
-        function parseNumber(v){ 
-            if(v===undefined||v===null||v==='') return 0; 
-            if(typeof v==='string' && (v.includes(',') || v.includes('R$'))) return cleanCurrency(v); 
-            const n=parseFloat(v); 
-            return isNaN(n)?0:n; 
-        }
-        
-        function cleanCdiTaxa(v){ 
-            if(v===undefined||v===null||v==='') return 0; 
-            if(typeof v!=='string') v=String(v); 
-            v=v.replace(/[^0-9,.]/g,''); 
-            let c=v.replace(',','.'); 
-            const parts=c.split('.'); 
-            if(parts.length>2) c=parts.slice(0,-1).join('')+'.'+parts.slice(-1); 
-            const n=parseFloat(c); 
-            return isNaN(n)?0:n; 
-        }
-        
+        function cleanCdiTaxa(v){
+             if(v===undefined||v===null||v==='') return 0;
+             if(typeof v!=='string') v=String(v);
+             v=v.replace(/[^0-9,.]/g,'');
+             let c=v.replace(',','.');
+             const parts=c.split('.');
+             if(parts.length>2) c=parts.slice(0,-1).join('')+'.'+parts.slice(-1);
+             const n=parseFloat(c);
+             return isNaN(n)?0:n;
+         }
+
         function formatBRL(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2}); }
         function formatPercent(n){ if(n===undefined||n===null||isNaN(n)) return ''; return n.toFixed(4).replace('.',','); }
         function formatPU(n){ if(n===undefined||n===null||isNaN(n)||n===0) return '-'; return n.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4}); }
         function formatDataBR(s){ if(!s) return '-'; if(s.match(/^\d{4}-\d{2}-\d{2}$/)){ const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; } if(s.match(/^\d{2}\/\d{2}\/\d{4}$/)) return s; const d=new Date(s); if(!isNaN(d)) return d.toLocaleDateString('pt-BR'); return s; }
-        
-        function normalizeDate(s){ 
-            if(!s) return ''; 
-            s=String(s).trim(); 
-            if(s.match(/^\d{4}-\d{2}-\d{2}$/)) return s; 
-            if(s.match(/^\d{2}\/\d{2}\/\d{4}$/)){ 
-                const [d,m,y]=s.split('/'); 
-                return `${y}-${m}-${d}`; 
-            } 
-            const num=parseFloat(s); 
-            if(!isNaN(num) && num>25569 && num<70000){ // Excel serial date
-                const base=new Date('1899-12-30'); 
-                const date=new Date(base.getTime() + num*24*60*60*1000); 
-                if(!isNaN(date)){ 
-                    const y=date.getUTCFullYear(); 
-                    const m=date.getUTCMonth()+1; 
-                    const d=date.getUTCDate(); 
-                    const pad=n=>n<10?'0'+n:n; 
-                    return `${y}-${pad(m)}-${pad(d)}`; 
-                } 
-            } 
-            try{ const d=new Date(s); if(!isNaN(d)) return d.toISOString().split('T')[0]; }catch(e){} 
-            return ''; 
-        }
-        
+
+        function normalizeDate(s){
+             if(!s) return '';
+             s=String(s).trim();
+             if(s.match(/^\d{4}-\d{2}-\d{2}$/)) return s;
+             if(s.match(/^\d{2}\/\d{2}\/\d{4}$/)){
+                 const [d,m,y]=s.split('/');
+                 return `${y}-${m}-${d}`;
+             }
+             const num=parseFloat(s);
+             if(!isNaN(num) && num>25569 && num<70000){ // Excel serial date
+                const base=new Date('1899-12-30');
+                 const date=new Date(base.getTime() + num*24*60*60*1000);
+                 if(!isNaN(date)){
+                     const y=date.getUTCFullYear();
+                     const m=date.getUTCMonth()+1;
+                     const d=date.getUTCDate();
+                     const pad=n=>n<10?'0'+n:n;
+                     return `${y}-${pad(m)}-${pad(d)}`;
+                 }
+             }
+             try{ const d=new Date(s); if(!isNaN(d)) return d.toISOString().split('T')[0]; }catch(e){}
+             return '';
+         }
+
         /* Persistência e estado */
         let operacoes = [], totalCompromissada=0, totalRetorno=0, totalGanho=0;
         function saveState(){ try{ const state={operacoes, taxaCdiAnual:document.getElementById('taxaCdiAnual').value, diasAno:document.getElementById('diasAno').value}; localStorage.setItem('cdiControlState', JSON.stringify(state)); }catch(e){ console.warn(e); } }
         /* Carrega estado e logo salvos */
         window.loadState = ()=>{
-            resetThemeToFixed(); // Aplica o tema Azul Marinho e Vermelho Secundário no carregamento
+            resetThemeToFixed();
             try{
                 const s = localStorage.getItem('cdiControlState');
                 if(s){
@@ -542,9 +518,9 @@
                     operacoes = st.operacoes || [];
                     document.getElementById('taxaCdiAnual').value = st.taxaCdiAnual || '14,90';
                     document.getElementById('diasAno').value = st.diasAno || '252';
-                    log(`💾 ${operacoes.length} operações carregadas.`);
-                } else log('Aguardando... Não há dados salvos.');
-            }catch(e){ operacoes=[]; log('❌ Erro ao carregar dados.'); }
+                    log(`💾 ${operacoes.length} operações carregadas do LocalStorage.`);
+                } else log('Aguardando... Não há dados salvos localmente.');
+            }catch(e){ operacoes=[]; log('❌ Erro ao carregar dados locais.'); }
             try {
                 const savedLogo = localStorage.getItem('cdiLogo');
                 if (savedLogo) {
@@ -553,10 +529,302 @@
                     log('💾 Logo carregado do salvamento local.');
                 }
             } catch (err) { console.warn(err); }
-            // adiciona listeners de filtro (só uma vez)
+            // Adiciona listeners para filtros e ações
             attachFilterListeners();
+            attachJsonListeners();
             calculateAndRender();
         };
+
+        // Função principal de processamento de um único arquivo (XLSX/CSV)
+        function handleExcelFile(file) {
+            log(`Processando arquivo Excel/CSV: ${file.name}...`);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                let workbook;
+                try {
+                    // Tenta ler como Excel (xlsx/xls)
+                    workbook = XLSX.read(data, { type: 'array', cellDates: true, cellNF: false, cellText: false });
+                } catch (err) {
+                    // Se falhar, tenta ler como CSV/TXT usando PapaParse
+                    const textData = new TextDecoder('utf-8').decode(data);
+                    Papa.parse(textData, {
+                        header: true,
+                        skipEmptyLines: true,
+                        dynamicTyping: false,
+                        complete: function(results) {
+                            if(results.data.length > 0){
+                                processImportedData(results.data);
+                            } else {
+                                log('❌ Erro: O arquivo CSV está vazio ou ilegível.');
+                            }
+                        },
+                        error: function(err) {
+                            log(`❌ Erro ao analisar CSV: ${err.message}`);
+                        }
+                    });
+                    return;
+                }
+
+                // Processamento de Excel
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false, dateNF: 'yyyy-mm-dd' });
+
+                if (json.length > 1) {
+                    const headers = json[0].map(h => String(h).trim());
+                    const dataRows = json.slice(1);
+                    const mappedData = dataRows.map(row => {
+                        const obj = {};
+                        headers.forEach((header, i) => {
+                            if (header.toLowerCase().includes('data')) {
+                                obj[header] = normalizeDate(row[i]);
+                            } else {
+                                obj[header] = row[i];
+                            }
+                        });
+                        return obj;
+                    }).filter(o => Object.keys(o).length > 0);
+
+                    processImportedData(mappedData);
+                } else {
+                    log('❌ Erro: A planilha está vazia.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processImportedData(data) {
+            // Mapeamento de cabeçalhos
+            const fieldMap = {
+                'data': ['data', 'dt. operação'],
+                'descricao': ['descrição', 'historico', 'operação', 'resumo'],
+                'banco': ['banco', 'contraparte'],
+                'contaCedente': ['c. cedente', 'conta cedente'],
+                'contaCessionario': ['c. cessionário', 'conta cessionário'],
+                'compromissada': ['valor compromissada', 'vlr. compromissada', 'vlr. ida', 'valor total ida'],
+                'retorno': ['valor retorno bruto', 'vlr. retorno bruto', 'vlr. volta', 'valor total volta'],
+                'cdiTaxa': ['taxa cdi anual', 'tx. 252', 'tx cdi'],
+                'puIda': ['pu ida', 'pu op'],
+                'puVolta': ['pu volta', 'pu resgate']
+            };
+
+            const mapHeader = (inputHeader) => {
+                const lower = String(inputHeader).toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+                for (const internalField in fieldMap) {
+                    if (fieldMap[internalField].some(keyword => lower.includes(keyword.replace(/[^a-z0-9]/g, '')))) {
+                        return internalField;
+                    }
+                }
+                return null;
+            };
+
+            const headers = data.length > 0 ? Object.keys(data[0]) : [];
+            const mappedHeaders = headers.map(h => ({ original: h, mapped: mapHeader(h) }));
+
+            const newOperations = data.map(row => {
+                const op = {};
+                mappedHeaders.forEach(({ original, mapped }) => {
+                    if (mapped) {
+                        op[mapped] = row[original];
+                    }
+                });
+                op.data = normalizeDate(op.data);
+                op.descricao = op.descricao || '-';
+                op.banco = op.banco || '-';
+                return op;
+            }).filter(op => op.data);
+
+            operacoes = operacoes.concat(newOperations);
+            saveState();
+            calculateAndRender();
+            log(`✅ ${newOperations.length} novas operações importadas com sucesso.`);
+        }
+
+        // Funções para Importação/Exportação JSON
+        function exportDataJson() {
+            const dataToExport = {
+                operacoes: operacoes,
+                taxaCdiAnual: document.getElementById('taxaCdiAnual').value,
+                diasAno: document.getElementById('diasAno').value
+            };
+
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cdi_ganhos_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            log('📥 Dados exportados para arquivo JSON. Salve este arquivo para importação em outro PC.');
+        }
+
+        function importDataJson(file) {
+            if (!file) {
+                log('❌ Nenhum arquivo JSON selecionado.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if (importedState.operacoes && Array.isArray(importedState.operacoes)) {
+                        operacoes = importedState.operacoes;
+                        document.getElementById('taxaCdiAnual').value = importedState.taxaCdiAnual || '14,90';
+                        document.getElementById('diasAno').value = importedState.diasAno || '252';
+                        saveState();
+                        calculateAndRender();
+                        log(`✅ ${operacoes.length} operações importadas com sucesso do arquivo JSON!`);
+                    } else {
+                        throw new Error('Formato de dados JSON inválido.');
+                    }
+                } catch (error) {
+                    log('❌ Erro ao processar o arquivo JSON. ' + error.message);
+                }
+            };
+            reader.onerror = function() {
+                log('❌ Erro de leitura do arquivo.');
+            };
+            reader.readAsText(file);
+        }
+
+        function attachJsonListeners() {
+            document.getElementById('exportJsonBtn').addEventListener('click', exportDataJson);
+            document.getElementById('loadJsonBtn').addEventListener('click', () => {
+                const fileInput = document.getElementById('jsonFile');
+                const file = fileInput.files[0];
+                importDataJson(file);
+            });
+        }
+
+        function editOperation(index){
+            const op = operacoes[index];
+            if(!op) return;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('manualData').value = normalizeDate(op.data);
+            document.getElementById('manualDesc').value = op.descricao;
+            document.getElementById('manualBanco').value = op.banco;
+            document.getElementById('manualCedente').value = op.contaCedente;
+            document.getElementById('manualCessionario').value = op.contaCessionario;
+            document.getElementById('manualCdiTaxa').value = formatPercent(cleanCdiTaxa(op.cdiTaxa));
+            document.getElementById('manualCompromissada').value = parseNumber(op.compromissada).toLocaleString('pt-BR',{minimumFractionDigits:2});
+            document.getElementById('manualRetorno').value = parseNumber(op.retorno).toLocaleString('pt-BR',{minimumFractionDigits:2});
+
+            document.getElementById('addBtn').textContent = 'Salvar Alterações';
+            document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+            log(`✏️ Editando operação de ${formatDataBR(op.data)}.`);
+            document.getElementById('manualData').focus();
+        }
+
+        function deleteOperation(index){
+            if(confirm(`Tem certeza que deseja excluir a operação de ${formatDataBR(operacoes[index].data)}?`)){
+                operacoes.splice(index, 1);
+                saveState();
+                calculateAndRender();
+                log('🗑️ Operação excluída.');
+            }
+        }
+
+        function clearManualForm(){
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('manualData').value = '';
+            document.getElementById('manualDesc').value = '';
+            document.getElementById('manualBanco').value = '';
+            document.getElementById('manualCedente').value = '';
+            document.getElementById('manualCessionario').value = '';
+            document.getElementById('manualCdiTaxa').value = '';
+            document.getElementById('manualCompromissada').value = '';
+            document.getElementById('manualRetorno').value = '';
+            document.getElementById('addBtn').textContent = 'Adicionar Lançamento';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        function attachFilterListeners(){
+            document.getElementById('filterBtn').addEventListener('click', calculateAndRender);
+            document.getElementById('resetFilterBtn').addEventListener('click', () => {
+                document.getElementById('filterStartDate').value = '';
+                document.getElementById('filterEndDate').value = '';
+                calculateAndRender();
+            });
+            document.getElementById('deleteAllBtn').addEventListener('click', () => {
+                if(confirm('ATENÇÃO: Você tem certeza que deseja excluir TODAS as operações salvas? Essa ação não pode ser desfeita.')){
+                    operacoes = [];
+                    saveState();
+                    calculateAndRender();
+                    log('🗑️ Todas as operações foram excluídas.');
+                }
+            });
+            
+            // NOVO: LISTENER PARA O BOTÃO DE IMPORTAR XLSX (MÉTODO ANTIGO)
+            document.getElementById('loadExcelBtn').addEventListener('click', () => {
+                const files = document.getElementById('excelFile').files;
+                if (files.length === 0) {
+                    log('⚠️ Por favor, selecione um ou mais arquivos Excel/CSV.');
+                    return;
+                }
+                Array.from(files).forEach(handleExcelFile);
+            });
+
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                const htmlTable = document.getElementById('resultTable').innerHTML;
+                if (!htmlTable.includes('<thead>')) {
+                    log('⚠️ Nenhuma tabela de dados para exportar.');
+                    return;
+                }
+                const workbook = XLSX.utils.table_to_book(document.querySelector('#resultTable table'));
+                XLSX.writeFile(workbook, `controle_ganhos_cdi_${new Date().toISOString().split('T')[0]}.xlsx`);
+                log('✅ Dados exportados para planilha Excel.');
+            });
+
+            // Listener do botão de adicionar/salvar manual
+            document.getElementById('addBtn').addEventListener('click', () => {
+                const data = normalizeDate(document.getElementById('manualData').value);
+                const desc = document.getElementById('manualDesc').value;
+                const banco = document.getElementById('manualBanco').value;
+                const cedente = document.getElementById('manualCedente').value;
+                const cessionario = document.getElementById('manualCessionario').value;
+                const cdiTaxa = cleanCdiTaxa(document.getElementById('manualCdiTaxa').value);
+                const comp = cleanCurrency(document.getElementById('manualCompromissada').value);
+                const ret = cleanCurrency(document.getElementById('manualRetorno').value);
+                const editIndex = parseInt(document.getElementById('editIndex').value);
+
+                if (!data || !desc || comp <= 0 || ret <= 0) {
+                    log('❌ Preencha pelo menos Data, Descrição, Valor Compromissada e Valor Retorno.');
+                    return;
+                }
+
+                const newOp = {
+                    data: data,
+                    descricao: desc,
+                    banco: banco,
+                    contaCedente: cedente,
+                    contaCessionario: cessionario,
+                    cdiTaxa: cdiTaxa,
+                    compromissada: comp,
+                    retorno: ret,
+                    puIda: 0,
+                    puVolta: 0
+                };
+
+                if (editIndex >= 0) {
+                    operacoes[editIndex] = newOp;
+                    log(`✅ Operação de ${formatDataBR(data)} atualizada.`);
+                } else {
+                    operacoes.push(newOp);
+                    log(`✅ Nova operação de ${formatDataBR(data)} adicionada.`);
+                }
+
+                saveState();
+                calculateAndRender();
+                clearManualForm();
+            });
+
+            document.getElementById('cancelEditBtn').addEventListener('click', clearManualForm);
+        }
         /* Renderização */
         function updateTotalCards(){ document.querySelector('#totalCompromissadaDisplay p').textContent = formatBRL(totalCompromissada); document.querySelector('#totalRetornoDisplay p').textContent = formatBRL(totalRetorno); document.querySelector('#totalCdiDisplay p').textContent = formatBRL(totalGanho); }
         function calculateAndRender(){
@@ -564,13 +832,12 @@
             const cdiGlobal = cleanCdiTaxa(document.getElementById('taxaCdiAnual').value);
             const diasAno = parseNumber(document.getElementById('diasAno').value) || 252;
             const showIndividual = document.getElementById('showIndividualOps').checked;
-            
+
             // LER E NORMALIZAR OS FILTROS
             const filterStartDateStr = document.getElementById('filterStartDate').value;
             const filterEndDateStr = document.getElementById('filterEndDate').value;
             const filterStart = filterStartDateStr ? normalizeDate(filterStartDateStr) : '';
             const filterEnd = filterEndDateStr ? normalizeDate(filterEndDateStr) : '';
-
             let ops = operacoes.filter(op=>{
                 const d = normalizeDate(op.data);
                 if(!d) return false;
@@ -579,23 +846,30 @@
                 return true;
             });
             ops.sort((a,b)=> normalizeDate(a.data).localeCompare(normalizeDate(b.data)));
+
             // normaliza exibição dos inputs
             document.getElementById('taxaCdiAnual').value = formatPercent(cdiGlobal);
             document.getElementById('diasAno').value = diasAno;
+
             let html = "<table><thead><tr><th>Data</th><th>Descrição/Resumo</th><th>Banco</th><th>Conta Cedente</th><th>Conta Cessionário</th><th>Compromissada</th><th>Retorno Bruto</th><th>PU IDA</th><th>PU VOLTA</th><th>Taxa CDI Anual (%)</th><th>Ganho (R$) Diário</th><th class='action-cell'>Ações</th></tr></thead><tbody>";
             const resumo = {};
             ops.forEach(op=>{
                 const d = normalizeDate(op.data);
-                const comp = parseNumber(op.compromissada); 
-                const ret = parseNumber(op.retorno);
+                const comp = parseNumber(op.compromissada);
+                 const ret = parseNumber(op.retorno);
+                // Calcula o ganho: se for RECOMPRA, inverte o sinal (compromissada - retorno)
                 const ganho = (ret - comp) * ( (typeof op.descricao === 'string' && op.descricao.toUpperCase().includes('RECOMPRA')) ? -1 : 1 );
                 const taxaUsada = (cleanCdiTaxa(op.cdiTaxa) > 0 && cleanCdiTaxa(op.cdiTaxa) !== 100) ? cleanCdiTaxa(op.cdiTaxa) : cdiGlobal;
+
+                // Acumula totais
                 totalCompromissada += comp; totalRetorno += ret; totalGanho += ganho;
+
                 if(!resumo[d]) resumo[d] = { data:d, totalCompromissada:0, totalRetorno:0, totalGanho:0, primeiraTaxa: taxaUsada };
                 resumo[d].totalCompromissada += comp; resumo[d].totalRetorno += ret; resumo[d].totalGanho += ganho;
+
                 if(showIndividual){
-                    const ganhoClass = ganho>0 ? 'ganho' : (ganho<0 ? 'perda' : ''); 
-                    html += `<tr class="individual-operation-row">
+                    const ganhoClass = ganho>0 ? 'ganho' : (ganho<0 ? 'perda' : '');
+                     html += `<tr class="individual-operation-row">
                         <td class="col-data">${formatDataBR(op.data)}</td>
                         <td class="col-left">${(op.descricao||'-')}</td>
                         <td class="col-left">${(op.banco||'-')}</td>
@@ -614,12 +888,13 @@
                     </tr>`;
                 }
             });
+
             const datas = Object.keys(resumo).sort();
             if(showIndividual && datas.length) html += `<tr><td colspan="12" style="text-align:left;background:rgba(0,0,0,0.02);font-weight:700;">RESUMO DIÁRIO (Consolidação por dia)</td></tr>`;
             datas.forEach(k=>{
                 const r = resumo[k];
-                const ganhoClass = r.totalGanho>0 ? 'ganho' : (r.totalGanho<0 ? 'perda' : ''); 
-                const taxaExib = (cleanCdiTaxa(r.primeiraTaxa) > 0 ? r.primeiraTaxa : cleanCdiTaxa(document.getElementById('taxaCdiAnual').value));
+                const ganhoClass = r.totalGanho>0 ? 'ganho' : (r.totalGanho<0 ? 'perda' : '');
+                 const taxaExib = (cleanCdiTaxa(r.primeiraTaxa) > 0 ? r.primeiraTaxa : cleanCdiTaxa(document.getElementById('taxaCdiAnual').value));
                 html += `<tr class="daily-summary-row">
                     <td class="col-data">${formatDataBR(r.data)}</td>
                     <td class="col-left">Soma Diária</td>
@@ -631,244 +906,11 @@
                     <td class="action-cell">-</td>
                 </tr>`;
             });
-            const totalClass = totalGanho>0 ? 'ganho' : (totalGanho<0 ? 'perda' : '');
-            html += `<tr class="total-row">
-                <td colspan="5">TOTAL GERAL</td>
-                <td>${formatBRL(totalCompromissada)}</td>
-                <td>${formatBRL(totalRetorno)}</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td class="${totalClass}" style="font-weight:800;">${formatBRL(totalGanho)}</td>
-                <td class="action-cell"></td>
-            </tr>`;
+
             html += "</tbody></table>";
             document.getElementById('resultTable').innerHTML = html;
             updateTotalCards();
-            saveState();
-            log(`✅ ${ops.length} operações exibidas em ${datas.length} dias.`);
         }
-        /* Edição / exclusão / listeners (mantidos) */
-        function editOperation(index){
-            const op = operacoes[index];
-            document.getElementById('manualData').value = normalizeDate(op.data);
-            document.getElementById('manualDesc').value = op.descricao || '';
-            document.getElementById('manualBanco').value = op.banco || '';
-            document.getElementById('manualCedente').value = op.contaCedente || '';
-            document.getElementById('manualCessionario').value = op.contaCessionario || '';
-            document.getElementById('manualCompromissada').value = formatNumberToDisplay(parseNumber(op.compromissada));
-            document.getElementById('manualRetorno').value = formatNumberToDisplay(parseNumber(op.retorno));
-            document.getElementById('manualCdiTaxa').value = op.cdiTaxa ? String(op.cdiTaxa).replace('.',',') : '';
-            document.getElementById('editIndex').value = index;
-            document.getElementById('addBtn').textContent = 'Salvar Alteração';
-            document.getElementById('cancelEditBtn').style.display = 'inline-block';
-            log(`📝 Editando índice ${index}.`);
-            document.getElementById('manualData').scrollIntoView({behavior:'smooth'});
-        }
-        function deleteOperation(index){
-            if(!confirm('Tem certeza que deseja excluir este lançamento?')) return;
-            operacoes.splice(index,1);
-            calculateAndRender();
-            log('🗑️ Lançamento excluído.');
-        }
-        /* Add / cancel */
-        function formatNumberToDisplay(number){ if(number===undefined||number===null||isNaN(number)) return ''; return number.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-        document.getElementById('addBtn').addEventListener('click', ()=>{
-            const idx = parseInt(document.getElementById('editIndex').value || '-1',10);
-            const data = document.getElementById('manualData').value;
-            const desc = document.getElementById('manualDesc').value || 'Lançamento Manual';
-            const banco = document.getElementById('manualBanco').value || '';
-            const ced = document.getElementById('manualCedente').value || '';
-            const cession = document.getElementById('manualCessionario').value || '';
-            const comp = document.getElementById('manualCompromissada').value;
-            const ret = document.getElementById('manualRetorno').value;
-            const taxa = document.getElementById('manualCdiTaxa').value || '';
-            if(!data || !comp || !ret){ alert('Preencha Data, Compromissada e Retorno Bruto.'); return; }
-            const obj = { data: normalizeDate(data), descricao: desc, banco, contaCedente: ced, contaCessionario: cession, compromissada: comp, retorno: ret, cdiTaxa: taxa, puIda:'', puVolta:'' };
-            if(idx > -1){ operacoes[idx] = { ...operacoes[idx], ...obj }; log(`✏️ Lançamento ${idx} atualizado.`); document.getElementById('cancelEditBtn').click(); }
-            else { operacoes.push(obj); log('➕ Lançamento adicionado.'); document.getElementById('manualData').value=''; document.getElementById('manualDesc').value=''; document.getElementById('manualBanco').value=''; document.getElementById('manualCedente').value=''; document.getElementById('manualCessionario').value=''; document.getElementById('manualCompromissada').value=''; document.getElementById('manualRetorno').value=''; document.getElementById('manualCdiTaxa').value=''; }
-            calculateAndRender();
-        });
-        document.getElementById('cancelEditBtn').addEventListener('click', ()=>{
-            document.getElementById('editIndex').value='-1';
-            document.getElementById('manualData').value=''; document.getElementById('manualDesc').value=''; document.getElementById('manualBanco').value=''; document.getElementById('manualCedente').value=''; document.getElementById('manualCessionario').value=''; document.getElementById('manualCompromissada').value=''; document.getElementById('manualRetorno').value=''; document.getElementById('manualCdiTaxa').value='';
-            document.getElementById('addBtn').textContent='Adicionar Lançamento';
-            document.getElementById('cancelEditBtn').style.display='none';
-            log('❌ Edição cancelada.');
-        });
-        /* Import / export / print / delete all */
-        const fileInput = document.getElementById('excelFile');
-        const loadBtn = document.getElementById('loadExcelBtn');
-        function attachFilterListeners(){
-            document.getElementById('filterBtn').addEventListener('click', calculateAndRender);
-            document.getElementById('resetFilterBtn').addEventListener('click', ()=>{
-                document.getElementById('filterStartDate').value = '';
-                document.getElementById('filterEndDate').value = '';
-                calculateAndRender();
-            });
-            document.getElementById('printBtn').addEventListener('click', ()=>window.print());
-            document.getElementById('deleteAllBtn').addEventListener('click', ()=>{
-                if(!confirm('Tem certeza que deseja EXCLUIR TODOS os lançamentos? Esta ação não pode ser desfeita.')) return;
-                operacoes = [];
-                localStorage.removeItem('cdiControlState');
-                calculateAndRender();
-                log('💥 Todos os dados excluídos.');
-            });
-        }
-        
-        if (loadBtn) loadBtn.disabled = true;
-        if (fileInput) {
-            fileInput.addEventListener('change', (e)=>{ if (loadBtn) loadBtn.disabled = !(e.target.files && e.target.files.length); if(e.target.files && e.target.files.length) log(`📁 ${e.target.files.length} arquivo(s) selecionado(s).`); else log('Aguardando seleção de arquivo...'); });
-        }
-        
-        async function loadExcel(file){
-            const ext = file.name.split('.').pop().toLowerCase();
-            if(ext==='xlsx' || ext==='xls'){
-                const data = await file.arrayBuffer();
-                const wb = XLSX.read(data,{type:'array'});
-                const ws = wb.Sheets[wb.SheetNames[0]];
-                return XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true});
-            } else {
-                return await new Promise((resolve,reject)=>{
-                    Papa.parse(file,{header:false,skipEmptyLines:true,delimiter:'auto',encoding:'utf-8',complete:r=>resolve(r.data),error:e=>reject(e)});
-                });
-            }
-        }
-        function findColumnIndices(data){
-            const headerRow = data.find(row => Array.isArray(row) && row.some(cell => typeof cell === 'string' && (cell.toUpperCase().includes('DT.MOVIMENTO') || cell.toUpperCase().includes('VL IDA') || cell.toUpperCase().includes('TAXA'))));
-            if(!headerRow){ log('⚠️ Cabeçalho não encontrado. Usando índices padrão.'); return { DATA:8, DESCRICAO:3, TAXA:19, RETORNO:11, COMPROMISSADA:15, BANCO:14, CEDENTE:-1, CESSIONARIO:-1, PU_IDA:-1, PU_VOLTA:-1, dataStartRow:0 }; }
-            const headers = headerRow.map(h => typeof h === 'string' ? h.toUpperCase().trim() : '');
-            const map = {
-                DATA: headers.findIndex(h => h.includes('DT.MOVIMENTO') || h.includes('DT.INÍCIO') || h==='DATA'),
-                TAXA: headers.findIndex(h => h==='TX. 252'),
-                DESCRICAO: headers.findIndex(h => h.includes('PAPEL') || h.includes('PRODUTO') || h.includes('TIPO OPERAÇÃO')),
-                RETORNO: headers.findIndex(h => h.includes('VALOR LÍQUIDO') || h.includes('VL VOLTA') || h==='VALOR'),
-                COMPROMISSADA: headers.findIndex(h => h.includes('VL IDA') || h==='VALOR'),
-                BANCO: headers.findIndex(h => h.includes('CONTRAPARTE') || h.includes('CLIENTE')),
-                CEDENTE: headers.findIndex(h => h.includes('CEDENTE') && h.includes('CONTA')),
-                CESSIONARIO: headers.findIndex(h => h.includes('CESSIONÁRIO') && h.includes('CONTA')),
-                PU_IDA: headers.findIndex(h => h.includes('PU IDA')),
-                PU_VOLTA: headers.findIndex(h => h.includes('PU VOLTA'))
-            };
-            const indices = {
-                DATA: map.DATA > -1 ? map.DATA : 3,
-                DESCRICAO: map.DESCRICAO > -1 ? map.DESCRICAO : 1,
-                TAXA: map.TAXA > -1 ? map.TAXA : 10,
-                RETORNO: map.RETORNO > -1 ? map.RETORNO : 7,
-                COMPROMISSADA: map.COMPROMISSADA > -1 ? map.COMPROMISSADA : 6,
-                BANCO: map.BANCO > -1 ? map.BANCO : 2,
-                CEDENTE: map.CEDENTE > -1 ? map.CEDENTE : 12,
-                CESSIONARIO: map.CESSIONARIO > -1 ? map.CESSIONARIO : 13,
-                PU_IDA: map.PU_IDA > -1 ? map.PU_IDA : 4,
-                PU_VOLTA: map.PU_VOLTA > -1 ? map.PU_VOLTA : 5,
-                dataStartRow: data.indexOf(headerRow) > -1 ? data.indexOf(headerRow) + 1 : 0
-            };
-            log(`Mapeamento: Data=${indices.DATA}, Comp=${indices.COMPROMISSADA}, Ret=${indices.RETORNO}, Taxa=${indices.TAXA}.`);
-            return indices;
-        }
-        function processExcel(data){
-            if(!data || data.length<1){ log('❌ Arquivo vazio.'); return []; }
-            const indices = findColumnIndices(data);
-            const start = indices.dataStartRow || 0;
-            let valid=0; const newOps = [];
-            for(let i=start; i<data.length; i++){
-                const row = data[i];
-                const rawComp = row[indices.COMPROMISSADA];
-                const rawRet = row[indices.RETORNO];
-                const rawData = row[indices.DATA];
-                // Ignorar linhas sem compromissada ou retorno válidos
-                if(parseNumber(rawComp) === 0 && parseNumber(rawRet) === 0) continue; 
-                
-                const dataFormatada = normalizeDate(rawData);
-                if(!dataFormatada) continue; // Ignorar linhas sem data válida
-                
-                newOps.push({
-                    data: dataFormatada,
-                    descricao: String(row[indices.DESCRICAO] || ''),
-                    banco: String(row[indices.BANCO] || ''),
-                    contaCedente: String(row[indices.CEDENTE] || ''),
-                    contaCessionario: String(row[indices.CESSIONARIO] || ''),
-                    compromissada: String(rawComp || ''),
-                    retorno: String(rawRet || ''),
-                    cdiTaxa: String(row[indices.TAXA] || ''),
-                    puIda: String(row[indices.PU_IDA] || ''),
-                    puVolta: String(row[indices.PU_VOLTA] || '')
-                });
-                valid++;
-            }
-            log(`✅ ${valid} operações válidas encontradas e prontas para importação.`);
-            return newOps;
-        }
-        
-        loadExcelBtn.addEventListener('click', async () => {
-            const files = fileInput.files;
-            if (files.length === 0) return;
-            
-            log(`⏳ Processando ${files.length} arquivo(s)...`);
-            let totalNewOps = [];
-            
-            for (const file of files) {
-                try {
-                    const data = await loadExcel(file);
-                    const newOps = processExcel(data);
-                    totalNewOps = totalNewOps.concat(newOps);
-                    log(`📁 Arquivo "${file.name}" processado. ${newOps.length} operações encontradas.`);
-                } catch (e) {
-                    console.error(e);
-                    log(`❌ Erro ao processar o arquivo "${file.name}".`);
-                }
-            }
-            
-            if (totalNewOps.length > 0) {
-                operacoes = operacoes.concat(totalNewOps);
-                calculateAndRender();
-                log(`🎉 Importação concluída! ${totalNewOps.length} novas operações adicionadas. Total: ${operacoes.length}.`);
-            } else {
-                log('⚠️ Nenhuma nova operação válida encontrada nos arquivos selecionados.');
-            }
-            // Limpa os arquivos selecionados
-            fileInput.value = '';
-            loadBtn.disabled = true;
-        });
-
-        document.getElementById('exportBtn').addEventListener('click', () => {
-            if(operacoes.length === 0) {
-                alert('Não há dados para exportar.');
-                return;
-            }
-
-            const header = [
-                'Data', 'Descricao', 'Banco', 'Conta Cedente', 'Conta Cessionario', 
-                'Compromissada', 'Retorno Bruto', 'PU Ida', 'PU Volta', 'Taxa CDI Anual (%)'
-            ];
-
-            const exportData = operacoes.map(op => {
-                const taxa = cleanCdiTaxa(op.cdiTaxa);
-                return [
-                    formatDataBR(op.data),
-                    op.descricao,
-                    op.banco,
-                    op.contaCedente,
-                    op.contaCessionario,
-                    parseNumber(op.compromissada),
-                    parseNumber(op.retorno),
-                    parseNumber(op.puIda),
-                    parseNumber(op.puVolta),
-                    taxa
-                ];
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet([header, ...exportData]);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Ganhos CDI");
-            
-            const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            XLSX.writeFile(wb, `Controle_Ganhos_CDI_${hoje}.xlsx`);
-            log('💾 Dados exportados para Excel.');
-        });
-            <!-- aqui já é o final do seu layout -->
-    
     </script>
 </body>
 </html>
-  
-
-
