@@ -49,6 +49,21 @@
         #top-actions{ display:flex; align-items:center; gap:10px; padding:10px; background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--card-border); flex-wrap:wrap; }
         #header-left{ display:flex; align-items:center; gap:10px; }
         #header-right{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        
+        /* ESTILO PARA O NOME DO ARQUIVO SELECIONADO */
+        #fileNameDisplay {
+            padding: 6px 10px;
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 600;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 7px;
+            background: #f0f0f8;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         /* --------------- BOTÕES SÓLIDOS COM CONTORNO BRANCO --------------- */
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s ease; background: var(--primary); color: white; border: 1px solid white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); }
         .btn.secondary { background: var(--secondary); color: white; border: 1px solid white; }
@@ -140,15 +155,17 @@
                 <button id="printBtn" class="btn small" title="Imprimir" onclick="window.print()">Imprimir</button>
                 <button id="exportBtn" class="btn small secondary" title="Exportar" onclick="exportExcel()">Exportar</button>
                 
-                <input type="file" id="excelFile" accept=".xlsx,.xls,.csv,.txt" multiple onchange="importFiles(event)" style="display: none;"> 
+                <input type="file" id="excelFile" accept=".xlsx,.xls,.csv,.txt" multiple onchange="selectFile(event)" style="display: none;"> 
 
                 <button id="searchFileBtn" class="btn small secondary" title="Buscar arquivo Excel/CSV" 
                     onclick="document.getElementById('excelFile').click()">
                     Buscar Arquivo
                 </button>
                 
+                <span id="fileNameDisplay" style="display:none;">Nenhum arquivo.</span>
+
                 <button id="importBtn" class="btn small secondary" title="Importar dados selecionados" 
-                    onclick="document.getElementById('excelFile').click()">
+                    onclick="importSelectedFile()" disabled>
                     Importar
                 </button>
                 
@@ -270,7 +287,8 @@
         /* Variáveis Globais de Estado */
         let operacoes = []; 
         let totalCompromissada=0, totalRetorno=0, totalGanho=0;
-
+        let fileToImport = null; // Variável para armazenar o arquivo selecionado
+        
         /* -------------------------   Funções Firebase AUTH   ------------------------- */
 
         async function handleLogin() {
@@ -610,53 +628,75 @@
             calculateAndRender();
         }
 
-        // ------------------------- Importação (Final, Corrigida e Robusta) -------------------------
-
-        function importFiles(event) {
+        // ------------------------- Importação (Nova Lógica com Confirmação) -------------------------
+        
+        function selectFile(event) {
             const files = event.target.files;
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const importBtn = document.getElementById('importBtn');
+
             if (files.length === 0) {
+                fileToImport = null;
+                fileNameDisplay.textContent = 'Nenhum arquivo selecionado.';
+                fileNameDisplay.style.display = 'none';
+                importBtn.disabled = true;
                 log('Nenhum arquivo selecionado.');
                 return;
             }
             
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            // Processamos APENAS o primeiro arquivo selecionado para simplificar o fluxo
-            const file = files[0]; 
-            const fileName = file.name.toUpperCase();
+            // Armazena o arquivo e exibe o nome
+            fileToImport = files[0];
+            fileNameDisplay.textContent = fileToImport.name;
+            fileNameDisplay.style.display = 'inline-block';
+            importBtn.disabled = false;
+            log(`Arquivo selecionado: ${fileToImport.name}. Clique em Importar para processar.`);
+        }
+
+        function importSelectedFile() {
+            if (!fileToImport) {
+                log('Nenhum arquivo para importar.');
+                return;
+            }
             
-            let dadosCombinados = [];
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            const fileName = fileToImport.name.toUpperCase();
             
             const callbackFinal = (novosDados) => {
                 document.getElementById('loadingOverlay').style.display = 'none';
                 
                 if (novosDados.length > 0) {
                     operacoes = operacoes.concat(novosDados);
-                    // Salva na Nuvem APÓS processar os dados
                     saveState(); 
-                    log(`✅ Importação de ${file.name} concluída. ${novosDados.length} novas operações adicionadas.`);
+                    log(`✅ Importação de ${fileToImport.name} concluída. ${novosDados.length} novas operações adicionadas.`);
                 } else {
-                    log(`❌ Nenhuma operação válida encontrada no arquivo ${file.name}. Verifique o cabeçalho.`);
+                    log(`❌ Nenhuma operação válida encontrada no arquivo ${fileToImport.name}. Verifique o cabeçalho.`);
                 }
-                event.target.value = null; // Limpa o input file para permitir nova importação
+                
+                // Limpa o estado da importação após o processamento
+                document.getElementById('excelFile').value = null; 
+                document.getElementById('fileNameDisplay').textContent = 'Nenhum arquivo.';
+                document.getElementById('fileNameDisplay').style.display = 'none';
+                document.getElementById('importBtn').disabled = true;
+                fileToImport = null;
             };
             
             if (fileName.endsWith('.XLSX') || fileName.endsWith('.XLS')) {
-                readExcelFile(file, callbackFinal);
+                readExcelFile(fileToImport, callbackFinal);
             } else if (fileName.endsWith('.CSV') || fileName.endsWith('.TXT')) {
-                readCSVFile(file, callbackFinal);
+                readCSVFile(fileToImport, callbackFinal);
             } else {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                log(`Arquivo ${file.name} ignorado. Formato não suportado.`);
-                event.target.value = null;
+                log(`Arquivo ${fileToImport.name} ignorado. Formato não suportado.`);
+                callbackFinal([]);
             }
         }
+
 
         function readExcelFile(file, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
-                    // Adicionado raw: false no XLSX.read e cellDates: true para melhor parsing de datas
                     const workbook = XLSX.read(data, { type: 'array', cellDates: true, raw: false });
                     const sheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
