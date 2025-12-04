@@ -372,7 +372,7 @@
             checkAuthState(); 
         };
 
-        /* ---------- Funções utilitárias e lógica (Inalteradas ou Ajustadas) ---------- */
+        /* ---------- Funções utilitárias e lógica ---------- */
 
         function log(message) { document.getElementById('log').textContent = message; }
         
@@ -604,7 +604,7 @@
             calculateAndRender();
         }
 
-        // ------------------------- Importação (Corrigida para Salvar na Nuvem) -------------------------
+        // ------------------------- Importação (Corrigida para Ser Mais Direta) -------------------------
 
         function importFiles(event) {
             const files = event.target.files;
@@ -614,45 +614,35 @@
             }
             
             document.getElementById('loadingOverlay').style.display = 'flex';
-            let arquivosProcessados = 0;
+            // Por simplicidade e robustez, processaremos APENAS o primeiro arquivo
+            const file = files[0]; 
+            const fileName = file.name.toUpperCase();
+            
             let dadosCombinados = [];
-
-            const processamentoConcluido = () => {
-                if (arquivosProcessados === files.length) {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    if (dadosCombinados.length > 0) {
-                        operacoes = operacoes.concat(dadosCombinados);
-                        // AQUI SALVAMOS NA NUVEM!
-                        saveState(); 
-                        log(`✅ Importação concluída. ${dadosCombinados.length} novas operações adicionadas. Salvando na Nuvem...`);
-                    } else {
-                        log('Nenhuma operação válida encontrada nos arquivos importados.');
-                    }
-                    event.target.value = null; // Limpa o input file
+            
+            const callbackFinal = (novosDados) => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (novosDados.length > 0) {
+                    operacoes = operacoes.concat(novosDados);
+                    // Salva na Nuvem APÓS processar os dados
+                    saveState(); 
+                    log(`✅ Importação de ${file.name} concluída. ${novosDados.length} novas operações adicionadas.`);
+                } else {
+                    log(`❌ Nenhuma operação válida encontrada no arquivo ${file.name}.`);
                 }
+                event.target.value = null; // Limpa o input file para permitir nova importação
             };
             
-            // Processa cada arquivo selecionado
-            Array.from(files).forEach(file => {
-                const fileName = file.name.toUpperCase();
-                if (fileName.endsWith('.XLSX') || fileName.endsWith('.XLS')) {
-                    readExcelFile(file, novosDados => {
-                        dadosCombinados = dadosCombinados.concat(novosDados);
-                        arquivosProcessados++;
-                        processamentoConcluido();
-                    });
-                } else if (fileName.endsWith('.CSV') || fileName.endsWith('.TXT')) {
-                    readCSVFile(file, novosDados => {
-                        dadosCombinados = dadosCombinados.concat(novosDados);
-                        arquivosProcessados++;
-                        processamentoConcluido();
-                    });
-                } else {
-                    log(`Arquivo ${file.name} ignorado. Formato não suportado.`);
-                    arquivosProcessados++;
-                    processamentoConcluido();
-                }
-            });
+            if (fileName.endsWith('.XLSX') || fileName.endsWith('.XLS')) {
+                readExcelFile(file, callbackFinal);
+            } else if (fileName.endsWith('.CSV') || fileName.endsWith('.TXT')) {
+                readCSVFile(file, callbackFinal);
+            } else {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                log(`Arquivo ${file.name} ignorado. Formato não suportado.`);
+                event.target.value = null;
+            }
         }
 
         function readExcelFile(file, callback) {
@@ -660,17 +650,23 @@
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                    // Adicionado raw: false no XLSX.read também para melhor parsing
+                    const workbook = XLSX.read(data, { type: 'array', cellDates: true, raw: false });
                     const sheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
+                    
                     const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false, defval: null });
                     const operations = parseDataFromSheet(json);
                     callback(operations);
                 } catch (error) {
                     console.error('Erro ao ler Excel:', error);
-                    log(`❌ Erro ao processar o arquivo ${file.name}.`);
+                    log(`❌ Erro ao processar o arquivo Excel. Verifique o formato das colunas.`);
                     callback([]);
                 }
+            };
+            reader.onerror = function(e) {
+                console.error('Erro de leitura do arquivo:', e);
+                callback([]);
             };
             reader.readAsArrayBuffer(file);
         }
@@ -686,7 +682,7 @@
                 },
                 error: function(error) {
                     console.error('Erro ao ler CSV:', error);
-                    log(`❌ Erro ao processar o arquivo ${file.name}.`);
+                    log(`❌ Erro ao processar o arquivo CSV.`);
                     callback([]);
                 }
             });
