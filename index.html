@@ -7,7 +7,109 @@
     <meta http-equiv="Expires" content="0" />
     <title>Controle de Ganhos CDI — Cloud Enabled</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <style>        :root{            /* CORES PRINCIPAIS: AZUL MARINHO ESCURO PRIMÁRIO, VERMELHO SECUNDÁRIO */            --primary: #0A0A33;  /* Azul Marinho Escuro */            --primary-light: #1A1A55; /* Versão mais clara para gradiente/hover */                        --secondary: #C00000; /* Vermelho Forte (Secundário/Destaque) */            --secondary-light: #E00000; /* Vermelho Claro para gradiente/hover */                        --danger: #c62828;  /* Mantido para ações de exclusão */            --bg-start: #f4f8fb;            --bg-end: #eef6fb;            --card-bg: #ffffff;            --card-border: rgba(0,0,0,0.06);            --text-dark: #0f1724;            --muted: #6b7280;            --success: #2e7d32;            --gap: 12px;            --radius: 10px;            --shadow: 0 8px 20px rgba(16,24,40,0.06);        }        /* Base */        html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, "Segoe UI", Arial;}        body{            background: linear-gradient(180deg,var(--bg-start),var(--bg-end));            color:var(--text-dark);            padding:calc(var(--gap) * 1.2);            -webkit-font-smoothing:antialiased;            font-size:14px;        }                /* Ajuste do Logo e Título para ficarem à esquerda e alinhados */        #siteLogo{             display:block; /* Muda para block */            max-width:140px;             width:100%;             height:auto;             border-radius:6px;             box-shadow:var(--shadow);             margin:0 0 6px 0; /* Remove margem automática, alinha à esquerda */        }        #logo-wrapper{ /* Este se torna desnecessário, mas o mantive no HTML abaixo para o logo */            margin-bottom:8px;        }                /* Header */        #header-container{             display:flex;             align-items:center;             gap:10px;             margin-bottom:8px;             /* Para manter o contêiner à esquerda se o logo estiver no topo */            width: fit-content;         }                #logo-placeholder{ font-size:1.4rem; color:var(--primary); }         h1{ margin:0; color:var(--text-dark); font-size:1.25rem; font-weight:700; }                /* Contêiner para logo e título juntos */        #left-header-content {            display: flex;            align-items: center;            gap: 10px;        }                /* Top actions compacto */        #top-actions{            display:flex; align-items:center; gap:10px; padding:10px;            background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--card-border);            flex-wrap:wrap;        }        #header-left{ display:flex; align-items:center; gap:10px; }        #header-right{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }        /* --------------- BOTÕES SÓLIDOS COM CONTORNO BRANCO (ESTILO TRAVELEX) --------------- */        .btn {            display: inline-flex;            align-items: center;            justify-content: center;            gap: 8px;            padding: 8px 12px;            border-radius: 8px;            cursor: pointer;            font-weight: 600;            transition: all 0.2s ease;                        /* Estilo Padrão (AZUL MARINHO): Fundo Primary, Texto Branco, Borda Branca */            background: var(--primary); /* Fundo Azul Marinho */            color: white; /* Texto Branco */            border: 1px solid white; /* Borda Branca Sólida */            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra padrão */        }        /* Estilo Secundário (VERMELHO): Fundo Secondary, Texto Branco, Borda Branca */        .btn.secondary {            background: var(--secondary); /* Fundo Vermelho */            color: white; /* Texto Branco */            border: 1px solid white; /* Borda Branca Sólida */        }        .btn.small {             padding: 6px 10px;             font-size: 13px;             border-radius: 7px;         }        .btn:hover {             transform: translateY(-2px);             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);             background: var(--primary-light); /* Ligeiramente mais claro no hover */            border-color: white; /* Mantém a borda branca */        }        .btn.secondary:hover {            background: var(--secondary-light); /* Ligeiramente mais claro no hover */            border-color: white; /* Mantém a borda branca */            box-shadow: 0 8px 20px rgba(192, 0, 0, 0.25);        }        .btn:active {             transform: none;             filter: brightness(0.96);             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);        }        /* O botão danger é usado no delete, mas como você quer ele VERMELHO (secondary),            ele usará o estilo .btn.secondary, com uma pequena variação de cor */        .btn.danger {             background: var(--secondary);             color: white;             border: 1px solid white;             box-shadow: 0 4px 10px rgba(198, 40, 40, 0.25);        }        .btn.danger:hover {             filter: brightness(0.85);             border-color: white;         }        /* ----------------------------------------------------------- */        /* Layout empilhado: resultados em cima, painel embaixo */        #main-container{            display:flex;            flex-direction:column;            gap:14px;            align-items:stretch;        }        /* Cards */        .card{            background:var(--card-bg); padding:14px; border-radius:10px; box-shadow:var(--shadow); border:1px solid var(--card-border);            color:var(--text-dark);        }        /* Inputs */        .input-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }        .input-row label{ font-size:13px; color:var(--muted); font-weight:600; display:block; margin-bottom:6px; }        input[type="text"], input[type="date"]{            padding:8px 10px; border-radius:8px; border:1px solid rgba(15,23,36,0.06); background:#fff; color:var(--text-dark); min-width:120px;        }        /* Totals */        .totals{ display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:12px; }        .total-card{ padding:10px; border-radius:8px; border:1px solid rgba(15,23,36,0.04); background:linear-gradient(180deg,#fff,#fbfdff); }        .total-card h4{ margin:0; font-size:12px; color:var(--muted); }        .total-card p{ margin:6px 0 0 0; font-size:18px; font-weight:800; color:var(--text-dark); }        /* Ganho total em verde */        #totalCdiDisplay p { color: var(--success) !important; }        /* Tabela */        .table-wrap{ overflow:auto; border-radius:8px; }        table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; color:var(--text-dark); }        thead th{            position:sticky; top:0; z-index:2;            /* Tira grande agora é Azul Marinho */            background: linear-gradient(180deg,var(--primary-light),var(--primary));            color:white; padding:10px 8px; text-align:left; font-weight:700;            border-bottom:1px solid rgba(0,0,0,0.06);        }        tbody td{ padding:8px 8px; border-bottom:1px solid rgba(0,0,0,0.04); text-align:right; }        tbody tr:nth-child(even){ background: rgba(0,0,0,0.02); }        td:first-child, th:first-child{ text-align:center; width:90px; }        /* Descrição/Resumo usa o novo primary (Azul Marinho) */        .col-left{             text-align:left;             max-width:260px;             overflow:hidden;             text-overflow:ellipsis;             white-space:nowrap;             color: var(--primary);             font-weight: 600;        }        /* Ações compactas */        .action-cell{ text-align:center; }                /* --------------- GANHO/PERDA (BADGE) E NEGRITO GERAL --------------- */        /* Estilo de Badge aplicado ao conteúdo da TD */        .ganho, .perda {             font-weight: 800;             padding: 2px 6px;             border-radius: 4px;             display: inline-block;             min-width: 60px;             text-align: center;        }        .ganho {             color: var(--success) !important;            background: rgba(46, 125, 50, 0.1);             border: 1px solid rgba(46, 125, 50, 0.2);        }        .perda {             color: var(--danger) !important;             background: rgba(198, 40, 40, 0.1);             border: 1px solid rgba(198, 40, 40, 0.2);        }        /* Estilo para b/strong em geral */        b, strong {            font-weight: 800;             color: var(--primary); /* Negrito no Azul Marinho do tema */        }        /* ------------------------------------------------------------------- */        /* Responsive */        @media (max-width:980px){            /* Centraliza em telas pequenas */            #siteLogo{ max-width:120px; display:block; margin:0 auto 8px; }            #header-container{ margin-bottom:0; width: 100%; justify-content: center; }            #left-header-content { justify-content: center; }            .input-row{ flex-direction:column; align-items:stretch; }        }        /* Print */        @media print{            body{ background:white; padding:0; color:black; }            #input-panel .file-label, #input-panel .logo-label, #deleteAllBtn { display:none; }        }    </style>
+    <style>        :root{            /* CORES PRINCIPAIS: AZUL MARINHO ESCURO PRIMÁRIO, VERMELHO SECUNDÁRIO */            --primary: #0A0A33;  /* Azul Marinho Escuro */            --primary-light: #1A1A55; /* Versão mais clara para gradiente/hover */                        --secondary: #C00000; /* Vermelho Forte (Secundário/Destaque) */            --secondary-light: #E00000; /* Vermelho Claro para gradiente/hover */                        --danger: #c62828;  /* Mantido para ações de exclusão */            --bg-start: #f4f8fb;            --bg-end: #eef6fb;            --card-bg: #ffffff;            --card-border: rgba(0,0,0,0.06);            --text-dark: #0f1724;            --muted: #6b7280;            --success: #2e7d32;            --gap: 12px;            --radius: 10px;            --shadow: 0 8px 20px rgba(16,24,40,0.06);        }        /* Base */        html,body{height:100%;margin:0;font-family:Inter, Roboto, system-ui, -apple-system, "Segoe UI", Arial;}        body{            background: linear-gradient(180deg,var(--bg-start),var(--bg-end));            color:var(--text-dark);            padding:calc(var(--gap) * 1.2);            -webkit-font-smoothing:antialiased;            font-size:14px;        }                /* Ajuste do Logo e Título para ficarem à esquerda e alinhados */        #siteLogo{             display:block; /* Muda para block */            max-width:140px;             width:100%;             height:auto;             border-radius:6px;             box-shadow:var(--shadow);             margin:0 0 6px 0; /* Remove margem automática, alinha à esquerda */        }        #logo-wrapper{ /* Este se torna desnecessário, mas o mantive no HTML abaixo para o logo */            margin-bottom:8px;        }                /* Header */        #header-container{             display:flex;             align-items:center;             gap:10px;             margin-bottom:8px;             /* Para manter o contêiner à esquerda se o logo estiver no topo */            width: fit-content;         }                #logo-placeholder{ font-size:1.4rem; color:var(--primary); }         h1{ margin:0; color:var(--text-dark); font-size:1.25rem; font-weight:700; }                /* Contêiner para logo e título juntos */        #left-header-content {            display: flex;            align-items: center;            gap: 10px;        }                /* Top actions compacto */        #top-actions{            display:flex; align-items:center; gap:10px; padding:10px;            background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--card-border);            flex-wrap:wrap;        }        #header-left{ display:flex; align-items:center; gap:10px; }        #header-right{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }        /* --------------- BOTÕES SÓLIDOS COM CONTORNO BRANCO (ESTILO TRAVELEX) --------------- */        .btn {            display: inline-flex;            align-items: center;            justify-content: center;            gap: 8px;            padding: 8px 12px;            border-radius: 8px;            cursor: pointer;            font-weight: 600;            transition: all 0.2s ease;                        /* Estilo Padrão (AZUL MARINHO): Fundo Primary, Texto Branco, Borda Branca */            background: var(--primary); /* Fundo Azul Marinho */            color: white; /* Texto Branco */            border: 1px solid white; /* Borda Branca Sólida */            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra padrão */        }        /* Estilo Secundário (VERMELHO): Fundo Secondary, Texto Branco, Borda Branca */        .btn.secondary {            background: var(--secondary); /* Fundo Vermelho */            color: white; /* Texto Branco */            border: 1px solid white; /* Borda Branca Sólida */        }
+        .btn.small {             padding: 6px 10px;             font-size: 13px;             border-radius: 7px;         }
+        .btn:hover {             transform: translateY(-2px);             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);             background: var(--primary-light); /* Ligeiramente mais claro no hover */            border-color: white; /* Mantém a borda branca */        }
+        .btn.secondary:hover {
+            background: var(--secondary-light); /* Ligeiramente mais claro no hover */
+            border-color: white; /* Mantém a borda branca */
+            box-shadow: 0 8px 20px rgba(192, 0, 0, 0.25);
+        }
+        .btn:active {             transform: none;             filter: brightness(0.96);             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);        }
+        /* O botão danger é usado no delete, mas como você quer ele VERMELHO (secondary),            ele usará o estilo .btn.secondary, com uma pequena variação de cor */
+        .btn.danger {             background: var(--secondary);             color: white;             border: 1px solid white;             box-shadow: 0 4px 10px rgba(198, 40, 40, 0.25);        }
+        .btn.danger:hover {             filter: brightness(0.85);             border-color: white;         }
+        /* ----------------------------------------------------------- */
+        /* Layout empilhado: resultados em cima, painel embaixo */
+        #main-container{
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+            align-items:stretch;
+        }
+        /* Cards */
+        .card{
+            background:var(--card-bg); padding:14px; border-radius:10px; box-shadow:var(--shadow); border:1px solid var(--card-border);
+            color:var(--text-dark);
+        }
+        /* Inputs */
+        .input-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+        .input-row label{ font-size:13px; color:var(--muted); font-weight:600; display:block; margin-bottom:6px; }
+        input[type="text"], input[type="date"]{
+            padding:8px 10px; border-radius:8px; border:1px solid rgba(15,23,36,0.06); background:#fff; color:var(--text-dark); min-width:120px;
+        }
+        /* Totals */
+        .totals{ display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:12px; }
+        .total-card{ padding:10px; border-radius:8px; border:1px solid rgba(15,23,36,0.04); background:linear-gradient(180deg,#fff,#fbfdff); }
+        .total-card h4{ margin:0; font-size:12px; color:var(--muted); }
+        .total-card p{ margin:6px 0 0 0; font-size:18px; font-weight:800; color:var(--text-dark); }
+        /* Ganho total em verde */
+        #totalCdiDisplay p { color: var(--success) !important; }
+        /* Tabela */
+        .table-wrap{ overflow:auto; border-radius:8px; }
+        table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; color:var(--text-dark); }
+        thead th{
+            position:sticky; top:0; z-index:2;
+            /* Tira grande agora é Azul Marinho */
+            background: linear-gradient(180deg,var(--primary-light),var(--primary));
+            color:white; padding:10px 8px; text-align:left; font-weight:700;
+            border-bottom:1px solid rgba(0,0,0,0.06);
+        }
+        tbody td{ padding:8px 8px; border-bottom:1px solid rgba(0,0,0,0.04); text-align:right; }
+        tbody tr:nth-child(even){ background: rgba(0,0,0,0.02); }
+        td:first-child, th:first-child{ text-align:center; width:90px; }
+        /* Descrição/Resumo usa o novo primary (Azul Marinho) */
+        .col-left{
+             text-align:left;
+             max-width:260px;
+             overflow:hidden;
+             text-overflow:ellipsis;
+             white-space:nowrap;
+             color: var(--primary);
+             font-weight: 600;
+        }
+        /* Ações compactas */
+        .action-cell{ text-align:center; }
+                /* --------------- GANHO/PERDA (BADGE) E NEGRITO GERAL --------------- */
+        /* Estilo de Badge aplicado ao conteúdo da TD */
+        .ganho, .perda {
+             font-weight: 800;
+             padding: 2px 6px;
+             border-radius: 4px;
+             display: inline-block;
+             min-width: 60px;
+             text-align: center;
+        }
+        .ganho {
+             color: var(--success) !important;
+            background: rgba(46, 125, 50, 0.1);
+             border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+        .perda {
+             color: var(--danger) !important;
+             background: rgba(198, 40, 40, 0.1);
+             border: 1px solid rgba(198, 40, 40, 0.2);
+        }
+        /* Estilo para b/strong em geral */
+        b, strong {
+            font-weight: 800;
+             color: var(--primary); /* Negrito no Azul Marinho do tema */
+        }
+        /* ------------------------------------------------------------------- */
+        /* Responsive */
+        @media (max-width:980px){
+            /* Centraliza em telas pequenas */
+            #siteLogo{ max-width:120px; display:block; margin:0 auto 8px; }
+            #header-container{ margin-bottom:0; width: 100%; justify-content: center; }
+            #left-header-content { justify-content: center; }
+            .input-row{ flex-direction:column; align-items:stretch; }
+        }
+        /* Print */
+        @media print{
+            body{ background:white; padding:0; color:black; }
+            #input-panel .file-label, #input-panel .logo-label, #deleteAllBtn { display:none; }
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -105,8 +207,6 @@
         }
         
         /* Compressão e extração de cor média (Mantida apenas para carregar o logo) */
-        const logoInput = document.getElementById('logoFile');
-        const siteLogo = document.getElementById('siteLogo');
         async function compressImageFile(file, quality = 0.7, maxSize = 600) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -131,49 +231,88 @@
                 reader.readAsDataURL(file);
             });
         }
-                
-        if (logoInput) {
-            // Lógica para salvar a imagem quando o arquivo é selecionado
-            logoInput.addEventListener('change', async (e) => {
-                const file = e.target.files && e.target.files[0];
-                if(!file) return;
-                                
-                try {
-                    const compressed = await compressImageFile(file, 0.7, 600);
-                    siteLogo.src = compressed;
-                    siteLogo.style.display = 'block';
-                    localStorage.setItem('cdiLogo', compressed); 
-                    log('✅ Logo salvo localmente.');
-                } catch (err) {
-                    console.error(err);
-                    log('❌ Erro ao processar o logo.');
-                }
-                resetThemeToFixed();
-            });
-            // O botão 'Carregar Logo' apenas aciona o clique no input file 
-            const addLogoBtn = document.getElementById('addLogoBtn'); 
-            if (addLogoBtn) { 
-                addLogoBtn.addEventListener('click', () => { 
-                    logoInput.click(); 
-                }); 
-            }
-        }
         
-        const removeLogoBtn = document.getElementById('removeLogoBtn');
-        if (removeLogoBtn) {
-            removeLogoBtn.addEventListener('click', ()=>{
-                if(!confirm('Tem certeza que deseja remover logo salvo e restaurar padrão?')) return;
-                localStorage.removeItem('cdiLogo');
-                siteLogo.src = '';
-                siteLogo.style.display = 'none';
-                resetThemeToFixed();
-                log('🗑️ Logo removido. Tema restaurado.');
-            });
-        }
+        // **CORREÇÃO 1: Trata o logo de forma segura após o DOM carregar**
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoInput = document.getElementById('logoFile');
+            const siteLogo = document.getElementById('siteLogo');
+            const removeLogoBtn = document.getElementById('removeLogoBtn');
+            const addLogoBtn = document.getElementById('addLogoBtn');
+
+            if (logoInput && siteLogo) {
+                // Lógica para salvar a imagem quando o arquivo é selecionado
+                logoInput.addEventListener('change', async (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if(!file) return;
+                                    
+                    try {
+                        const compressed = await compressImageFile(file, 0.7, 600);
+                        siteLogo.src = compressed;
+                        siteLogo.style.display = 'block';
+                        localStorage.setItem('cdiLogo', compressed); 
+                        log('✅ Logo salvo localmente.');
+                    } catch (err) {
+                        console.error(err);
+                        log('❌ Erro ao processar o logo.');
+                    }
+                    resetThemeToFixed();
+                });
+                
+                // O botão 'Carregar Logo' apenas aciona o clique no input file 
+                if (addLogoBtn) { 
+                    addLogoBtn.addEventListener('click', () => { 
+                        logoInput.click(); 
+                    }); 
+                }
+            }
+
+            if (removeLogoBtn && siteLogo) {
+                removeLogoBtn.addEventListener('click', ()=>{
+                    if(!confirm('Tem certeza que deseja remover logo salvo e restaurar padrão?')) return;
+                    localStorage.removeItem('cdiLogo');
+                    siteLogo.src = '';
+                    siteLogo.style.display = 'none';
+                    resetThemeToFixed();
+                    log('🗑️ Logo removido. Tema restaurado.');
+                });
+            }
+
+            // Adiciona listeners para exportação e impressão
+            document.getElementById('exportBtn').addEventListener('click', exportToExcel);
+            document.getElementById('printBtn').addEventListener('click', () => window.print());
+            document.getElementById('addBtn').addEventListener('click', addManualOperation);
+            document.getElementById('cancelEditBtn').addEventListener('click', clearManualForm);
+        });
+
         
         // --- Funções de processamento de dados (mantidas como estão) ---
-        function cleanCurrency(v){             if(typeof v!=='string') v=String(v);             let cleanString = v.replace(/[R$\s]/g, '');            cleanString = cleanString.replace(/\./g, '');            cleanString = cleanString.replace(/,/g, '.');            const n=parseFloat(cleanString);             return isNaN(n)?0:n;         }
-        function parseNumber(v){             if(v===undefined||v===null||v==='') return 0;             if(typeof v==='string' && (v.includes(',') || v.includes('R$'))) return cleanCurrency(v);             const n=parseFloat(v);             return isNaN(n)?0:n;         }                
+        // **CORREÇÃO 2: cleanCurrency mais robusto para importação de arquivos**
+        function cleanCurrency(v){
+            if(typeof v!=='string') v=String(v);
+            let cleanString = v.replace(/[R$\s]/g, '').trim();
+
+            if (cleanString.includes('.') && cleanString.includes(',')) {
+                // Formato misto (ex: 1.000,00 ou 1,000.00). O último separador é o decimal.
+                const lastComma = cleanString.lastIndexOf(',');
+                const lastDot = cleanString.lastIndexOf('.');
+
+                if (lastComma > lastDot) { // Formato BR (vírgula é decimal): 1.000,00
+                    cleanString = cleanString.replace(/\./g, ''); // Remove separador de milhares (ponto)
+                    cleanString = cleanString.replace(/,/g, '.'); // Troca separador decimal (vírgula)
+                } else { // Formato US (ponto é decimal): 1,000.00
+                    cleanString = cleanString.replace(/,/g, ''); // Remove separador de milhares (vírgula)
+                }
+            } else {
+                // Se só tem um separador, assume BR (vírgula decimal) por padrão, o que é mais seguro para o Brasil.
+                cleanString = cleanString.replace(/\./g, '');
+                cleanString = cleanString.replace(/,/g, '.');
+            }
+
+            const n=parseFloat(cleanString);
+            return isNaN(n)?0:n;
+        }
+
+        function parseNumber(v){             if(v===undefined||v===null||v==='') return 0;             if(typeof v==='string' && (v.includes(',') || v.includes('R$') || v.includes('.'))) return cleanCurrency(v);             const n=parseFloat(v);             return isNaN(n)?0:n;         }                
         function cleanCdiTaxa(v){             if(v===undefined||v===null||v==='') return 0;             if(typeof v!=='string') v=String(v);             v=v.replace(/[^0-9,.]/g,'');             let c=v.replace(',','.');             const parts=c.split('.');             if(parts.length>2) c=parts.slice(0,-1).join('')+'.'+parts.slice(-1);             const n=parseFloat(c);             return isNaN(n)?0:n;         }                
         function formatBRL(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2}); }        
         function formatPercent(n){ if(n===undefined||n===null||isNaN(n)) return ''; return n.toFixed(4).replace('.',','); }        
@@ -198,7 +337,7 @@
         let operacoes = [], totalCompromissada=0, totalRetorno=0, totalGanho=0;
         
         // =========================================================================================
-        // FUNÇÃO saveState() - AGORA SALVA NO FIRESTORE
+        // FUNÇÃO saveState() - SALVA NO FIRESTORE
         // =========================================================================================
         function saveState() { 
             if (!globalDocRef) {
@@ -227,7 +366,7 @@
         }
 
         // =========================================================================================
-        // FUNÇÃO loadState() - AGORA CARREGA VIA FIREBASE AUTH
+        // FUNÇÃO loadState() - CARREGA VIA FIREBASE AUTH
         // =========================================================================================
         window.loadState = ()=>{
             resetThemeToFixed();
@@ -240,8 +379,8 @@
                 if (user) {
                     // Usuário logado
                     document.getElementById('currentUserDisplay').textContent = user.email;
-                    loginBtn.style.display = 'none';
-                    logoutBtn.style.display = 'inline-flex';
+                    if(loginBtn) loginBtn.style.display = 'none';
+                    if(logoutBtn) logoutBtn.style.display = 'inline-flex';
                     
                     globalDocRef = db.collection('users').doc(user.uid); 
                     
@@ -275,7 +414,7 @@
                     if (logoutBtn) logoutBtn.style.display = 'none';
                     log('Por favor, faça o login para acessar os dados na nuvem.');
                     
-                    // Carrega do localStorage (apenas para fallback ou testes antigos)
+                    // Fallback para localStorage (opcional, mas mantido)
                     try{
                         const s = localStorage.getItem('cdiControlState');
                         if(s){
@@ -284,18 +423,27 @@
                             document.getElementById('taxaCdiAnual').value = st.taxaCdiAnual || '14,90';
                             document.getElementById('diasAno').value = st.diasAno || '252';
                             log(`⚠️ Carregando dados locais (${operacoes.length} operações). Faça login para salvar na nuvem.`);
-                        } else log('Aguardando... Não há dados salvos localmente.');
-                    }catch(e){ operacoes=[]; log('❌ Erro ao carregar dados locais.'); }
+                        } else {
+                           // Garante que o estado inicial é carregado se não houver dados
+                           document.getElementById('taxaCdiAnual').value = '14,90';
+                           document.getElementById('diasAno').value = '252';
+                           log('Aguardando... Não há dados salvos localmente.');
+                        }
+                    }catch(e){ 
+                        operacoes=[]; 
+                        log('❌ Erro ao carregar dados locais.'); 
+                    }
                     
                     attachFilterListeners();
                     calculateAndRender(); // Renderiza com dados locais (se houver)
                 }
             });
 
-            // Carrega o logo (que permanece local)
+            // **CORREÇÃO 1: Trata o logo de forma segura dentro da loadState**
             try {
+                const siteLogo = document.getElementById('siteLogo');
                 const savedLogo = localStorage.getItem('cdiLogo');
-                if (savedLogo) {
+                if (savedLogo && siteLogo) {
                     siteLogo.src = savedLogo;
                     siteLogo.style.display = 'block';
                 }
@@ -427,13 +575,11 @@
             }
 
             // Exibir loading (o seu HTML não tem um overlay, mas este é o lugar certo para ele)
-            // document.getElementById('loadingOverlay').style.display = 'flex';
             
             const fileName = fileToImport.name.toUpperCase();
             
             const callbackFinal = (novosDados) => {
                 // Ocultar loading
-                // document.getElementById('loadingOverlay').style.display = 'none';
                 fileToImport = null;
                 document.getElementById('excelFile').value = ''; // Limpa o input
                 document.getElementById('loadExcelBtn').disabled = true;
@@ -443,7 +589,7 @@
                     log(`✅ ${novosDados.length} novas operações importadas. Salvando na nuvem...`);
                     saveState(); // Tenta salvar no Firestore
                 } else {
-                    log('⚠️ Nenhum dado útil encontrado para importação.');
+                    log('⚠️ Nenhum dado útil encontrado para importação. Verifique os cabeçalhos e a formatação numérica.');
                 }
             };
             
@@ -452,7 +598,6 @@
             } else if (fileName.endsWith('.CSV') || fileName.endsWith('.TXT')) {
                 readCSVFile(fileToImport, callbackFinal);
             } else {
-                // document.getElementById('loadingOverlay').style.display = 'none';
                 log(`Arquivo ${fileToImport.name} ignorado. Formato não suportado.`);
                 callbackFinal([]);
             }
@@ -528,8 +673,9 @@
                 }
             });
             
-            if (Object.keys(columnIndex).length < 5) {
-                log('⚠️ Cabeçalhos essenciais (Data, Compromissada, Retorno, Descrição) não encontrados. Verifique seu arquivo.');
+            // Requer Data, Compromissada, Retorno, Descrição, Banco
+            if (!columnIndex.data || !columnIndex.compromissada || !columnIndex.retorno || !columnIndex.descricao || !columnIndex.banco) {
+                log('⚠️ Cabeçalhos essenciais (Data, Compromissada, Retorno, Descrição, Banco) não encontrados. Verifique seu arquivo.');
                 return [];
             }
 
@@ -552,11 +698,12 @@
                     source: `Importação ${new Date().toISOString()}`
                 };
 
-                // Apenas adiciona se tiver data, compromissada e retorno
+                // Apenas adiciona se tiver data, compromissada (valor > 0) e retorno
                 if (op.data && op.compromissada > 0 && op.retorno >= 0) {
                     parsedData.push(op);
                 } else if (index < 10) {
-                    console.warn(`Linha ${index + 2} ignorada: Dados incompletos.`, row);
+                    // console.warn para as primeiras 10 linhas que falham
+                    console.warn(`Linha ${index + 2} ignorada: Dados incompletos. [Data: ${op.data}, Comp: ${op.compromissada}, Ret: ${op.retorno}]`, row);
                 }
             });
             return parsedData;
@@ -707,15 +854,6 @@
             XLSX.writeFile(wb, "Controle_CDI_Export_" + new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') + ".xlsx");
             log('✅ Dados exportados para Excel.');
         }
-
-        // Adiciona listeners para exportação e impressão
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('exportBtn').addEventListener('click', exportToExcel);
-            document.getElementById('printBtn').addEventListener('click', () => window.print());
-            document.getElementById('addBtn').addEventListener('click', addManualOperation);
-            document.getElementById('cancelEditBtn').addEventListener('click', clearManualForm);
-            // O botão 'Carregar Logo' já tem o listener no evento `change` do input file
-        });
 
     </script>
 
