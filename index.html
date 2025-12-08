@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Comparador PDF ⇄ Excel — Controle CDI (Cloud)</title>
+<title>Comparador PDF ⇄ Excel — Controle CDI</title>
 
-<!-- Dependências -->
+<!-- libs -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -14,91 +14,138 @@
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <style>
-  :root{
-    --primary:#0A0A33; --primary-light:#1A1A55; --secondary:#C00000; --muted:#6b7280;
-    --bg:#f4f8fb; --card:#fff; --radius:10px; --gap:12px; --shadow: 0 8px 20px rgba(16,24,40,0.06);
-  }
-  *{box-sizing:border-box}
-  body{font-family:Inter,Roboto,Arial; margin:0; padding:20px; background:linear-gradient(180deg,#f4f8fb,#eef6fb); color:#0f1724}
-  .card{background:var(--card); border-radius:var(--radius); padding:12px; box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.05); margin-bottom:12px}
-  .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  h1{margin:0;font-size:18px}
-  .btn{background:var(--primary); color:#fff; border:1px solid white; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600}
-  .btn.secondary{background:var(--secondary)}
-  input[type=file]{display:none}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .small{padding:6px 8px;font-size:13px}
-  #resultTable{max-height:360px; overflow:auto}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,0.04);text-align:left}
-  th{background:linear-gradient(180deg,var(--primary-light),var(--primary));color:#fff;position:sticky;top:0}
-  .muted{color:var(--muted);font-size:13px}
-  pre#log{height:90px; overflow:auto; background:#f7fafc; padding:8px; border-radius:8px}
-  @media(max-width:800px){ .row{flex-direction:column;align-items:stretch} }
+:root{
+  --primary:#0A0A33; --primary-light:#1A1A55; --secondary:#C00000;
+  --muted:#6b7280; --card-bg:#fff; --radius:10px; --gap:12px;
+  --shadow:0 8px 20px rgba(16,24,40,0.06);
+}
+*{box-sizing:border-box}
+body{font-family:Inter,Roboto,Arial,sans-serif;margin:16px;background:#f4f8fb;color:#0f1724}
+.card{background:var(--card-bg);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.06)}
+#header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+#logo-placeholder{font-size:24px}
+h1{font-size:18px;margin:0}
+#top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between;padding:10px}
+.left-actions{display:flex;gap:8px;align-items:center}
+.right-actions{display:flex;gap:8px;align-items:center}
+.btn{background:var(--primary);color:#fff;padding:8px 12px;border-radius:8px;border:1px solid #fff;cursor:pointer;font-weight:600}
+.btn.secondary{background:var(--secondary)}
+.btn.small{padding:6px 10px;font-size:13px}
+.input-inline{display:inline-flex;align-items:center;gap:8px}
+#main{display:flex;gap:12px;margin-top:12px;flex-direction:column}
+.filter-card{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.input-row{display:flex;gap:8px;align-items:center}
+.totals{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.total-card{padding:10px;border-radius:8px;border:1px solid rgba(15,23,36,0.04);background:linear-gradient(180deg,#fff,#fbfdff);min-width:180px}
+.total-card h4{margin:0;font-size:12px;color:var(--muted)}
+.total-card p{margin:6px 0 0 0;font-size:18px;font-weight:800}
+.table-wrap{overflow:auto;border-radius:8px;margin-top:8px}
+table{width:100%;border-collapse:collapse}
+thead th{position:sticky;top:0;background:linear-gradient(180deg,var(--primary-light),var(--primary));color:#fff;padding:8px;text-align:left;font-weight:700}
+tbody td{padding:8px;border-bottom:1px solid rgba(0,0,0,0.04);text-align:right}
+.col-left{text-align:left;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--primary);font-weight:600}
+.action-cell{text-align:center}
+.ganho{color:#2e7d32;font-weight:800}
+.perda{color:#c62828;font-weight:800}
+#log{height:120px;overflow:auto;background:#fbfdff;padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.03);font-size:13px;color:var(--muted)}
+@media(max-width:800px){ .totals{flex-direction:column} .right-actions{justify-content:flex-end} }
 </style>
 </head>
 <body>
-  <div class="card top">
-    <div>
-      <h1>Comparador PDF ⇄ Excel — Controle CDI</h1>
-      <div class="muted">1️⃣ Carregar PDF • 2️⃣ Carregar Excel • 3️⃣ Comparar</div>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="logo-placeholder">📈</div>
+  <div>
+    <h1>Controle de Ganhos CDI</h1>
+    <div style="font-size:12px;color:var(--muted)">Comparador PDF ⇄ Excel — Resultado e Conciliação</div>
+  </div>
+</div>
+
+<!-- TOP ACTIONS -->
+<div id="top-actions" class="card">
+  <div class="left-actions">
+    <div style="font-weight:700">1️⃣ Carregar PDF • 2️⃣ Carregar Excel • 3️⃣ Comparar</div>
+  </div>
+
+  <div class="right-actions">
+    <span id="currentUserDisplay" style="font-weight:600;color:var(--muted);margin-right:6px">Desconectado</span>
+    <button id="loginBtn" class="btn small">Login</button>
+    <button id="logoutBtn" class="btn small secondary" style="display:none">Sair</button>
+
+    <label style="display:inline-block">
+      <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,.txt" style="display:none" />
+      <span class="btn small" onclick="document.getElementById('excelFile').click()">Carregar Excel</span>
+    </label>
+
+    <button id="importBtn" class="btn small secondary" title="Importar Selecionado">Importar Selecionado</button>
+
+    <button id="compareBtn" class="btn small" title="Comparar">Comparar PDF ⇄ Excel</button>
+
+    <button id="exportBtn" class="btn small secondary" title="Exportar">Exportar</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="card">
+    <div style="font-weight:700;margin-bottom:6px">Observação</div>
+    <div style="font-size:13px;color:var(--muted)">Selecione o Excel e clique em <strong>Importar Selecionado</strong>. Se estiver logado os dados vão pro Firestore; senão, ficam no localStorage.</div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:700">Resultado da Conciliação</div>
+      <div style="font-size:12px;color:var(--muted)">Filtros rápidos</div>
     </div>
-    <div style="margin-left:auto" id="userActions">
-      <span id="currentUserDisplay" class="muted">Desconectado</span>
-      <button id="loginBtn" class="btn small">Login</button>
-      <button id="logoutBtn" class="btn small secondary" style="display:none">Sair</button>
+
+    <div class="filter-card" style="margin-top:10px">
+      <div class="input-row">
+        <label>Data Início</label>
+        <input id="filterStartDate" type="date" />
+      </div>
+      <div class="input-row">
+        <label>Data Fim</label>
+        <input id="filterEndDate" type="date" />
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <label style="font-weight:600;color:var(--muted)"><input id="showIndividualOps" type="checkbox" checked> Mostrar Detalhe por Operação</label>
+        <button id="filterBtn" class="btn small">Filtrar</button>
+        <button id="resetFilterBtn" class="btn small secondary">Limpar</button>
+      </div>
+    </div>
+
+    <div class="totals" style="margin-top:12px">
+      <div class="total-card">
+        <h4>Compromissada TOTAL</h4>
+        <p id="totalCompromissada">R$ 0,00</p>
+      </div>
+      <div class="total-card">
+        <h4>Retorno Bruto TOTAL</h4>
+        <p id="totalRetorno">R$ 0,00</p>
+      </div>
+      <div class="total-card">
+        <h4>Ganho (R$) TOTAL</h4>
+        <p id="totalGanho">R$ 0,00</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="tableWrap" style="margin-top:12px">
+      <div id="resultTable">Nenhuma operação carregada.</div>
     </div>
   </div>
 
-  <!-- Ações principais -->
   <div class="card">
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <div>
-        <label class="btn small" for="pdfFile">Carregar PDF</label>
-        <input id="pdfFile" type="file" accept="application/pdf">
-      </div>
-
-      <div>
-        <label class="btn small" for="excelFile">Carregar Excel</label>
-        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv,.txt" multiple>
-      </div>
-
-      <div>
-        <button id="importSelectedBtn" class="btn small secondary">Importar Selecionado</button>
-      </div>
-
-      <div>
-        <button id="compareBtn" class="btn small">Comparar PDF ⇄ Excel</button>
-      </div>
-
-      <div style="margin-left:auto">
-        <button id="exportBtn" class="btn small secondary">Exportar</button>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:700">Log</div>
+      <div style="font-size:12px;color:var(--muted)">Mensagens de processamento</div>
     </div>
-
-    <div style="margin-top:10px" class="muted">
-      <strong>Observação:</strong> selecione o Excel e clique em <em>Importar Selecionado</em>. Se estiver logado, os dados serão salvos no Firestore; caso contrário, ficarão no localStorage.
-    </div>
-  </div>
-
-  <!-- Resultados / Tabela -->
-  <div class="card">
-    <h3>Resultado da Conciliação</h3>
-    <div id="resultTable" aria-live="polite">
-      <div class="muted">Nenhum dado carregado.</div>
-    </div>
-  </div>
-
-  <!-- Log -->
-  <div class="card">
-    <h4>Log</h4>
     <pre id="log">Aguardando...</pre>
   </div>
+</div>
 
 <script>
-/* ==========================
-   CONFIGURAÇÃO FIREBASE (já com seu projeto)
-   ========================== */
+/* ===================== CONFIG FIREBASE (usei o que você forneceu) ===================== */
 const firebaseConfig = {
   apiKey: "AIzaSyD_vxw2VcSPO_tMXgrl7quZ85ODvpqQuR8",
   authDomain: "controle-cdi.firebaseapp.com",
@@ -110,355 +157,382 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+let globalDocRef = null;
 
-/* ==========================
-   Estado
-   ========================== */
-let operacoes = []; // array de objetos {data, descricao, banco, compromissada, retorno, ...}
-let fileQueue = []; // arquivos selecionados (FileList -> array)
-let selectedPdf = null;
-
-/* ==========================
-   Utilitários
-   ========================== */
+/* ---------------- util ---------------- */
 function log(msg){
   const el = document.getElementById('log');
-  const now = new Date().toLocaleString();
+  const now = new Date().toLocaleString('pt-BR');
   el.textContent = `${now} — ${msg}\n` + el.textContent;
 }
-function formatBRL(n){ try { return Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2}); }catch(e){return n} }
+function formatBRL(n){ try { return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2}); } catch(e){ return 'R$ 0,00'; } }
+function cleanCurrency(v){
+  if(v===undefined||v===null) return 0;
+  if(typeof v !== 'string') v = String(v);
+  let s = v.replace(/[R$\s]/g,'').trim();
+  if(s.indexOf(',')>-1 && s.indexOf('.')>-1){
+    // assume last comma is decimals
+    const lastComma = s.lastIndexOf(',');
+    const lastDot = s.lastIndexOf('.');
+    if(lastComma > lastDot){
+      s = s.replace(/\./g,'').replace(/,/g,'.');
+    } else {
+      s = s.replace(/,/g,'');
+    }
+  } else {
+    s = s.replace(/\./g,'').replace(/,/g,'.');
+  }
+  const n = parseFloat(s);
+  return isNaN(n)?0:n;
+}
+function parseNumber(v){
+  if(v===undefined||v===null||v==='') return 0;
+  if(typeof v === 'string' && (v.includes(',') || v.includes('R$') || v.includes('.'))) return cleanCurrency(v);
+  const n = parseFloat(v);
+  return isNaN(n)?0:n;
+}
 function normalizeDate(s){
   if(!s) return '';
-  s=String(s).trim();
+  s = String(s).trim();
   if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){
-    const [d,m,y]=s.split('/'); return `${y}-${m}-${d}`;
-  }
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){ const [d,m,y]=s.split('/'); return `${y}-${m}-${d}`; }
   const num = parseFloat(s);
   if(!isNaN(num) && num>25569 && num<70000){
     const base = new Date('1899-12-30');
     const date = new Date(base.getTime() + num*24*60*60*1000);
-    const y = date.getUTCFullYear(), m = (date.getUTCMonth()+1).toString().padStart(2,'0'), d = date.getUTCDate().toString().padStart(2,'0');
-    return `${y}-${m}-${d}`;
+    if(!isNaN(date)){
+      const y = date.getUTCFullYear(); const m = date.getUTCMonth()+1; const d = date.getUTCDate();
+      const pad = n=> n<10? '0'+n: n;
+      return `${y}-${pad(m)}-${pad(d)}`;
+    }
   }
   const d = new Date(s);
   if(!isNaN(d)) return d.toISOString().split('T')[0];
   return '';
 }
-function parseNumber(v){
-  if(v===undefined||v===null||v==='') return 0;
-  if(typeof v === 'number') return v;
-  if(typeof v === 'string'){
-    let s=v.replace(/[R$\s]/g,'').trim();
-    if(s.includes('.') && s.includes(',')){
-      if(s.lastIndexOf(',')>s.lastIndexOf('.')) { s = s.replace(/\./g,'').replace(',','.'); }
-      else s = s.replace(/,/g,'');
-    } else { s = s.replace(/\./g,'').replace(',','.'); }
-    const n = parseFloat(s);
-    return isNaN(n)?0:n;
-  }
-  return 0;
+
+/* ---------------- state ---------------- */
+let operacoes = [];
+let fileToImport = null;
+
+/* --------- UI bindings --------- */
+document.getElementById('excelFile').addEventListener('change', (e)=>{
+  const files = e.target.files;
+  if(!files || files.length===0){ fileToImport = null; log('Nenhum arquivo selecionado.'); return; }
+  fileToImport = files[0];
+  log(`Arquivos prontos: ${fileToImport.name}`);
+});
+document.getElementById('importBtn').addEventListener('click', importSelectedFile);
+document.getElementById('filterBtn').addEventListener('click', calculateAndRender);
+document.getElementById('resetFilterBtn').addEventListener('click', ()=>{
+  document.getElementById('filterStartDate').value=''; document.getElementById('filterEndDate').value=''; calculateAndRender();
+});
+document.getElementById('exportBtn').addEventListener('click', exportToExcel);
+document.getElementById('loginBtn').addEventListener('click', loginUser);
+document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+document.getElementById('compareBtn').addEventListener('click', ()=>{ log('Comparação acionada (a lógica de comparação de PDF não está implementada aqui).') });
+
+/* ---------------- Firebase Auth ---------------- */
+function loginUser(){
+  const email = prompt('Digite seu e-mail:');
+  const pass = prompt('Digite sua senha:');
+  if(!email||!pass){ log('Login cancelado.'); return; }
+  log('Tentando login...');
+  firebase.auth().signInWithEmailAndPassword(email, pass)
+    .then(()=> log(`Login bem-sucedido: ${email}`))
+    .catch(err=>{
+      if(err.code==='auth/user-not-found'){
+        log('Usuário não encontrado. Criando conta...');
+        firebase.auth().createUserWithEmailAndPassword(email, pass)
+          .then(()=> log(`Conta criada e logada: ${email}`))
+          .catch(e=> log('❌ Erro: '+e.message));
+      } else log('❌ Erro: '+err.message);
+    });
 }
 
-/* ==========================
-   Autenticação (simples)
-   ========================== */
-document.getElementById('loginBtn').addEventListener('click', async ()=>{
-  const email = prompt('Email:');
-  const pass = prompt('Senha:');
-  if(!email || !pass) { log('Login cancelado.'); return; }
-  log('Tentando login...');
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, pass);
-    log('Login bem-sucedido.');
-  } catch(e){
-    if(e.code === 'auth/user-not-found'){
-      try {
-        await firebase.auth().createUserWithEmailAndPassword(email, pass);
-        log('Conta criada e logada.');
-      } catch(err){
-        log('Erro criando conta: ' + err.message);
-      }
-    } else {
-      log('Erro login: ' + e.message);
-    }
-  }
-});
-document.getElementById('logoutBtn').addEventListener('click', async ()=>{
-  await firebase.auth().signOut();
-  log('Logout efetuado.');
-});
+function logoutUser(){
+  firebase.auth().signOut().then(()=> log('Logout realizado.')).catch(e=> log('Erro ao sair: '+e.message));
+}
 
-firebase.auth().onAuthStateChanged(async (user)=>{
-  const display = document.getElementById('currentUserDisplay');
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
+firebase.auth().onAuthStateChanged(user=>{
   if(user){
-    display.textContent = user.email;
-    loginBtn.style.display = 'none';
-    logoutBtn.style.display = 'inline-block';
-    // carrega dados do Firestore (se houver)
-    try {
-      const doc = await db.collection('users').doc(user.uid).get();
+    document.getElementById('currentUserDisplay').textContent = user.email;
+    document.getElementById('loginBtn').style.display='none';
+    document.getElementById('logoutBtn').style.display='inline-block';
+    globalDocRef = db.collection('users').doc(user.uid);
+    // load remote state if exists
+    globalDocRef.get().then(doc=>{
       if(doc.exists){
         const st = doc.data();
         operacoes = st.operacoes || [];
-        renderTable();
         log(`🔁 ${operacoes.length} operações carregadas do Firestore.`);
+        calculateAndRender();
       } else {
-        log('Nenhum dado na nuvem — pronto para salvar.');
+        log('🔁 0 operações carregadas do Firestore.');
       }
-    } catch(e){
-      log('Erro lendo Firestore: ' + e.message);
-    }
+    }).catch(e=> log('Erro ao ler Firestore: '+e.message));
   } else {
-    display.textContent = 'Desconectado';
-    loginBtn.style.display = 'inline-block';
-    logoutBtn.style.display = 'none';
-    // carrega dados locais
-    try {
+    document.getElementById('currentUserDisplay').textContent = 'Desconectado';
+    document.getElementById('loginBtn').style.display='inline-block';
+    document.getElementById('logoutBtn').style.display='none';
+    globalDocRef = null;
+    // load local
+    try{
       const s = localStorage.getItem('cdiControlState');
-      if(s){ operacoes = JSON.parse(s).operacoes || []; renderTable(); log(`🔁 ${operacoes.length} operações carregadas do localStorage.`); }
-    } catch(e){ log('Erro carregando local: ' + e.message); }
+      if(s){
+        const st = JSON.parse(s);
+        operacoes = st.operacoes || [];
+        log('Dados locais carregados.');
+        calculateAndRender();
+      } else {
+        log('Aguardando... (sem dados locais)');
+      }
+    }catch(e){ log('Erro ao carregar local: '+e.message) }
   }
 });
 
-/* ==========================
-   Seleção de arquivos
-   ========================== */
-const excelInput = document.getElementById('excelFile');
-const pdfInput = document.getElementById('pdfFile');
-
-excelInput.addEventListener('change', (ev)=>{
-  const files = Array.from(ev.target.files || []);
-  fileQueue = files;
-  if(files.length) {
-    const list = files.map(f=>f.name).join(', ');
-    log('Arquivos prontos: ' + list);
-  } else {
-    log('Nenhum arquivo Excel selecionado.');
-  }
-});
-
-pdfInput.addEventListener('change', (ev)=>{
-  const f = ev.target.files && ev.target.files[0];
-  if(f) {
-    selectedPdf = f;
-    log('PDF selecionado: ' + f.name + ' (nota: processamento de PDF não implementado aqui — placeholder).');
-  } else {
-    selectedPdf = null;
-  }
-});
-
-/* ==========================
-   Importar Excel (XLSX/CSV)
-   ========================== */
-document.getElementById('importSelectedBtn').addEventListener('click', async ()=>{
-  if(!fileQueue || fileQueue.length===0){ log('Nenhum arquivo selecionado para importar.'); return; }
-  // processa arquivos um a um
-  let totalAdded = 0;
-  for(const f of fileQueue){
-    const name = f.name.toUpperCase();
-    if(name.endsWith('.CSV') || name.endsWith('.TXT')){
-      const added = await readCSVFile(f);
-      totalAdded += added;
-    } else if(name.endsWith('.XLSX') || name.endsWith('.XLS')){
-      const added = await readExcelFile(f);
-      totalAdded += added;
+/* ---------------- Import / Read ---------------- */
+function importSelectedFile(){
+  if(!fileToImport){ log('Nenhum arquivo para importar.'); return; }
+  const name = fileToImport.name.toUpperCase();
+  log('Iniciando importação: ' + fileToImport.name);
+  const cb = (novos)=>{
+    fileToImport = null; document.getElementById('excelFile').value='';
+    if(novos.length>0){
+      operacoes = operacoes.concat(novos);
+      log(`✅ ${novos.length} novas operações importadas. Salvando...`);
+      saveState();
+      calculateAndRender();
     } else {
-      log('Formato ignorado: ' + f.name);
+      log('⚠️ Nenhuma operação válida encontrada nos arquivos.');
     }
-  }
-  // limpa seleção
-  fileQueue = [];
-  excelInput.value = '';
-  if(totalAdded>0){
-    log(`✅ ${totalAdded} operações importadas.`);
-    saveState();
-    renderTable();
-  } else {
-    log('⚠️ Nenhuma operação válida encontrada nos arquivos.');
-  }
-});
+  };
+  if(name.endsWith('.XLSX')||name.endsWith('.XLS')) readExcelFile(fileToImport, cb);
+  else if(name.endsWith('.CSV')||name.endsWith('.TXT')) readCSVFile(fileToImport, cb);
+  else { log('Formato não suportado.'); cb([]); }
+}
 
-function readExcelFile(file){
-  return new Promise((resolve)=>{
-    const r = new FileReader();
-    r.onload = (e)=>{
-      try {
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type:'array', cellDates:true});
-        const first = wb.SheetNames[0];
-        const ws = wb.Sheets[first];
-        const arr = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, dateNF:'yyyy-mm-dd'});
-        if(!arr || arr.length<2){ resolve(0); return; }
-        const headers = arr[0].map(h=>String(h||'').trim().toUpperCase());
-        const rows = arr.slice(1);
-        const parsed = parseDataFromSheet(headers, rows);
-        operacoes = operacoes.concat(parsed);
-        resolve(parsed.length);
-      } catch(err){
-        console.error(err);
-        log('Erro lendo XLSX: ' + err.message);
-        resolve(0);
-      }
-    };
-    r.onerror = ()=>{ log('Erro leitura arquivo: ' + file.name); resolve(0); };
-    r.readAsArrayBuffer(file);
+function readExcelFile(file, callback){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type:'array', cellDates:true });
+      const first = workbook.SheetNames[0];
+      const ws = workbook.Sheets[first];
+      const json = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, dateNF:'yyyy-mm-dd' });
+      if(!json || json.length<2){ callback([]); return; }
+      const headers = json[0].map(h=>String(h||'').trim().toUpperCase());
+      const rows = json.slice(1);
+      const parsed = parseDataFromSheet(headers, rows);
+      callback(parsed);
+    }catch(err){
+      console.error(err); log('❌ Erro ao processar Excel.');
+      callback([]);
+    }
+  };
+  reader.onerror = (err)=>{ log('❌ Erro leitura Excel: '+err); callback([]); };
+  reader.readAsArrayBuffer(file);
+}
+
+function readCSVFile(file, callback){
+  Papa.parse(file, {
+    header:false, skipEmptyLines:true, encoding:'ISO-8859-1',
+    complete: function(results){
+      if(!results || !results.data || results.data.length<2){ callback([]); return; }
+      const headers = results.data[0].map(h=>String(h||'').trim().toUpperCase());
+      const rows = results.data.slice(1);
+      const parsed = parseDataFromSheet(headers, rows);
+      callback(parsed);
+    },
+    error: function(err){ log('❌ Erro CSV: '+err.message); callback([]); }
   });
 }
 
-function readCSVFile(file){
-  return new Promise((resolve)=>{
-    Papa.parse(file, {
-      header:false, skipEmptyLines:true, encoding:'ISO-8859-1',
-      complete: function(res){
-        if(!res || !res.data || res.data.length<2){ resolve(0); return; }
-        const headers = res.data[0].map(h=>String(h||'').trim().toUpperCase());
-        const rows = res.data.slice(1);
-        const parsed = parseDataFromSheet(headers, rows);
-        operacoes = operacoes.concat(parsed);
-        resolve(parsed.length);
-      },
-      error: function(err){
-        log('Erro leitura CSV: ' + err.message);
-        resolve(0);
-      }
-    });
-  });
-}
-
-/* ==========================
-   Parse genérico da planilha
-   ========================== */
-function parseDataFromSheet(headers, rows){
+function parseDataFromSheet(headers, dataRows){
   const map = {
-    data: ['DATA','DATA OPERAÇÃO','DATAOPERAÇÃO','DATA_OPERACAO'],
-    descricao: ['DESCRIÇÃO','DESCRICAO','RESUMO','EVENTO','DESCRICAO'],
-    banco: ['BANCO','CONTRAPARTE'],
-    compromissada: ['VALOR COMPROMISSADA','COMPROMISSADA','VALOR COMPROMISSADO','VALOR','VALOR APLICADO'],
-    retorno: ['VALOR RETORNO BRUTO','RETORNO BRUTO','RETORNO'],
-    cdiTaxa: ['TX. CDI %','TX. 252','TAXA','TAXA CDI'],
-    puIda: ['PU IDA','PU INICIAL'],
-    puVolta: ['PU VOLTA','PU FINAL']
+    data:['DATA','DATA OPERAÇÃO','DATA OPERAÇÃO '],
+    descricao:['DESCRIÇÃO','DESCRICAO','RESUMO','EVENTO'],
+    banco:['BANCO','CONTRAPARTE'],
+    contaCedente:['CONTA CEDENTE','CEDENTE'],
+    contaCessionario:['CONTA CESSIONÁRIO','CONTA CESSIONARIO','CESSIONARIO'],
+    compromissada:['VALOR COMPROMISSADA','COMPROMISSADA','VALOR COMPROMISSADO','VALOR COMPROMISSADO'],
+    retorno:['VALOR RETORNO BRUTO','RETORNO BRUTO','RETORNO'],
+    cdiTaxa:['TX. CDI %','TX. 252','TAXA','TAXA CDI'],
+    puIda:['PU IDA','PU INICIAL'],
+    puVolta:['PU VOLTA','PU FINAL']
   };
   const columnIndex = {};
   Object.keys(map).forEach(k=>{
-    const names = map[k];
-    const idx = headers.findIndex(h=> names.includes(h));
-    if(idx!==-1) columnIndex[k]=idx;
+    const idx = headers.findIndex(h => map[k].includes(String(h||'').toUpperCase()));
+    if(idx !== -1) columnIndex[k]=idx;
   });
-  // checagem mínima
-  if(columnIndex.data===undefined || columnIndex.compromissada===undefined || columnIndex.retorno===undefined){
+  if(columnIndex.data===undefined || columnIndex.compromissada===undefined || columnIndex.retorno===undefined || columnIndex.descricao===undefined || columnIndex.banco===undefined){
     log('⚠️ Cabeçalhos essenciais não detectados (Data / Compromissada / Retorno). Verifique seu arquivo.');
     return [];
   }
-  const out = [];
-  rows.forEach((row, i)=>{
+
+  const parsed = [];
+  dataRows.forEach((row, i)=>{
     if(!row || row.length===0) return;
     if(row.every(c => c===undefined || c===null || String(c).trim()==='')) return;
     const op = {
       data: normalizeDate(row[columnIndex.data]),
       descricao: row[columnIndex.descricao] || '',
       banco: row[columnIndex.banco] || '',
+      contaCedente: row[columnIndex.contaCedente] || '',
+      contaCessionario: row[columnIndex.contaCessionario] || '',
       compromissada: parseNumber(row[columnIndex.compromissada]),
       retorno: parseNumber(row[columnIndex.retorno]),
-      cdiTaxa: (columnIndex.cdiTaxa!==undefined ? parseNumber(row[columnIndex.cdiTaxa]) : 0),
-      puIda: (columnIndex.puIda!==undefined ? parseNumber(row[columnIndex.puIda]) : 0),
-      puVolta: (columnIndex.puVolta!==undefined ? parseNumber(row[columnIndex.puVolta]) : 0),
-      source: 'import-' + new Date().toISOString()
+      cdiTaxa: (columnIndex.cdiTaxa!==undefined? parseNumber(row[columnIndex.cdiTaxa]):0),
+      puIda: (columnIndex.puIda!==undefined? parseNumber(row[columnIndex.puIda]):0),
+      puVolta: (columnIndex.puVolta!==undefined? parseNumber(row[columnIndex.puVolta]):0),
+      source: `Importação ${new Date().toISOString()}`
     };
-    if(op.data && op.compromissada>0 && op.retorno>=0) out.push(op);
-    else if(i<6) console.warn('Linha ignorada (incompleta):', row);
+    if(op.data && op.compromissada>0 && op.retorno>=0) parsed.push(op);
+    else if(i<10) console.warn(`Linha ${i+2} ignorada ->`, row);
   });
-  return out;
+  return parsed;
 }
 
-/* ==========================
-   Render tabela
-   ========================== */
-function renderTable(){
-  const container = document.getElementById('resultTable');
-  if(!operacoes || operacoes.length===0){
-    container.innerHTML = '<div class="muted">Nenhuma operação carregada.</div>';
-    return;
+/* ---------------- Render / Save ---------------- */
+function saveState(){
+  // if logged, save to Firestore; else save to localStorage
+  if(globalDocRef){
+    const st = { operacoes, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+    globalDocRef.set(st).then(()=> log('✅ Dados salvos no Firestore.')).catch(e=> log('❌ Erro salvar Firestore: '+e.message));
+  } else {
+    try{
+      const st = { operacoes, timestamp: new Date().toISOString() };
+      localStorage.setItem('cdiControlState', JSON.stringify(st));
+      log('✅ Dados salvos localmente (usuário não logado).');
+    }catch(e){ log('❌ Erro salvar localmente: '+e.message); }
   }
-  // organiza por data
-  const ops = operacoes.slice().sort((a,b)=> (a.data||'').localeCompare(b.data||''));
-  let html = '<table><thead><tr><th>Data</th><th>Descrição</th><th>Banco</th><th>Compromissada</th><th>Retorno</th></tr></thead><tbody>';
+}
+
+function calculateAndRender(){
+  let totalComp=0, totalRet=0, totalGain=0;
+  const showIndividual = document.getElementById('showIndividualOps').checked;
+  const filterStart = document.getElementById('filterStartDate').value ? normalizeDate(document.getElementById('filterStartDate').value): '';
+  const filterEnd = document.getElementById('filterEndDate').value ? normalizeDate(document.getElementById('filterEndDate').value): '';
+
+  let ops = operacoes.filter(op=>{
+    const d = normalizeDate(op.data);
+    if(!d) return false;
+    if(filterStart && d < filterStart) return false;
+    if(filterEnd && d > filterEnd) return false;
+    return true;
+  });
+  ops.sort((a,b)=> normalizeDate(a.data).localeCompare(normalizeDate(b.data)));
+
+  let html = "<table><thead><tr><th>Data</th><th>Descrição/Resumo</th><th>Banco</th><th>Conta Cedente</th><th>Conta Cessionário</th><th>Compromissada</th><th>Retorno Bruto</th><th>PU IDA</th><th>PU VOLTA</th><th>Taxa CDI Anual (%)</th><th>Ganho (R$) Diário</th><th class='action-cell'>Ações</th></tr></thead><tbody>";
+  const resumo = {};
   ops.forEach((op, idx)=>{
-    html += `<tr>
-      <td>${op.data ? op.data.split('-').reverse().join('/') : '-'}</td>
-      <td>${(op.descricao||'-')}</td>
-      <td>${(op.banco||'-')}</td>
-      <td style="text-align:right">${formatBRL(op.compromissada)}</td>
-      <td style="text-align:right">${formatBRL(op.retorno)}</td>
+    const d = normalizeDate(op.data);
+    const comp = parseNumber(op.compromissada);
+    const ret = parseNumber(op.retorno);
+    const ganho = ret - comp;
+    totalComp += comp; totalRet += ret; totalGain += ganho;
+    if(!resumo[d]) resumo[d]={data:d,totalCompromissada:0,totalRetorno:0,totalGanho:0};
+    resumo[d].totalCompromissada += comp; resumo[d].totalRetorno += ret; resumo[d].totalGanho += ganho;
+    if(showIndividual){
+      const ganhoClass = ganho>0? 'ganho' : (ganho<0? 'perda' : '');
+      html += `<tr>
+        <td>${formatDateForDisplay(op.data)}</td>
+        <td class="col-left">${(op.descricao||'-')}</td>
+        <td class="col-left">${(op.banco||'-')}</td>
+        <td>${op.contaCedente||'-'}</td>
+        <td>${op.contaCessionario||'-'}</td>
+        <td style="text-align:right">${formatBRL(comp)}</td>
+        <td style="text-align:right">${formatBRL(ret)}</td>
+        <td style="text-align:right">${op.puIda? op.puIda.toFixed(4): '-'}</td>
+        <td style="text-align:right">${op.puVolta? op.puVolta.toFixed(4): '-'}</td>
+        <td style="text-align:center">${op.cdiTaxa? parseFloat(op.cdiTaxa).toFixed(4).replace('.',',') : '-'}</td>
+        <td class="${ganhoClass}">${formatBRL(ganho)}</td>
+        <td class="action-cell">-</td>
+      </tr>`;
+    }
+  });
+
+  // daily summaries
+  const dias = Object.keys(resumo).sort();
+  if(showIndividual && dias.length) html += `<tr><td colspan="12" style="text-align:left;background:rgba(0,0,0,0.02);font-weight:700;">RESUMO DIÁRIO</td></tr>`;
+  dias.forEach(k=>{
+    const r = resumo[k];
+    const ganhoClass = r.totalGanho>0? 'ganho' : (r.totalGanho<0? 'perda' : '');
+    html += `<tr style="background:rgba(0,0,0,0.03)">
+      <td>${formatDateForDisplay(r.data)}</td>
+      <td class="col-left">Soma Diária</td>
+      <td class="col-left">-</td><td>-</td><td>-</td>
+      <td style="text-align:right">${formatBRL(r.totalCompromissada)}</td>
+      <td style="text-align:right">${formatBRL(r.totalRetorno)}</td>
+      <td>-</td><td>-</td><td style="text-align:center">-</td>
+      <td class="${ganhoClass}">${formatBRL(r.totalGanho)}</td>
+      <td class="action-cell">-</td>
     </tr>`;
   });
-  html += '</tbody></table>';
-  container.innerHTML = html;
+
+  // totals row
+  const totalClass = totalGain>0? 'ganho' : (totalGain<0? 'perda':'' );
+  html += `<tr style="font-weight:700;background:rgba(0,0,0,0.02)"><td colspan="5">TOTAL GERAL</td><td style="text-align:right">${formatBRL(totalComp)}</td><td style="text-align:right">${formatBRL(totalRet)}</td><td>-</td><td>-</td><td>-</td><td class="${totalClass}" style="text-align:right">${formatBRL(totalGain)}</td><td></td></tr>`;
+
+  html += "</tbody></table>";
+  document.getElementById('resultTable').innerHTML = html;
+  document.getElementById('totalCompromissada').textContent = formatBRL(totalComp);
+  document.getElementById('totalRetorno').textContent = formatBRL(totalRet);
+  document.getElementById('totalGanho').textContent = formatBRL(totalGain);
+  saveState();
+  log(`✅ ${ops.length} operações exibidas em ${dias.length} dias.`);
 }
 
-/* ==========================
-   Salvar estado (local ou Firestore)
-   ========================== */
-async function saveState(){
-  const user = firebase.auth().currentUser;
-  const payload = { operacoes, saved_at: new Date().toISOString() };
-  if(user){
-    try {
-      await db.collection('users').doc(user.uid).set({ operacoes, saved_at: firebase.firestore.FieldValue.serverTimestamp() });
-      log('✅ Dados salvos na nuvem (Firestore).');
-    } catch(e){
-      log('Erro salvando na nuvem: ' + e.message);
-      // fallback local
-      try { localStorage.setItem('cdiControlState', JSON.stringify(payload)); log('✅ Dados salvos localmente (fallback).'); } catch(err){ log('Erro saving local fallback'); }
-    }
-  } else {
-    try {
-      localStorage.setItem('cdiControlState', JSON.stringify(payload));
-      log('✅ Dados salvos localmente (usuário não logado).');
-    } catch(e){
-      log('Erro salvando localmente: ' + e.message);
-    }
-  }
+function formatDateForDisplay(s){
+  if(!s) return '-';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)){ const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; }
+  const d = new Date(s);
+  if(!isNaN(d)) return d.toLocaleDateString('pt-BR');
+  return s;
 }
 
-/* ==========================
-   Exportar (simples)
-   ========================== */
-document.getElementById('exportBtn').addEventListener('click', ()=>{
-  if(!operacoes || operacoes.length===0){ log('Nada para exportar.'); return; }
-  const headers = ['Data','Descricao','Banco','Compromissada','Retorno','Fonte'];
-  const rows = operacoes.map(op=>[op.data, op.descricao, op.banco, op.compromissada, op.retorno, op.source||'']);
-  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Dados');
-  XLSX.writeFile(wb, 'Controle_CDI_Export_' + new Date().toISOString().slice(0,10) + '.xlsx');
+function exportToExcel(){
+  if(!operacoes || operacoes.length===0){ log('Nenhuma operação para exportar.'); return; }
+  const headerMap = { data:'Data', descricao:'Descrição', banco:'Banco', contaCedente:'Conta Cedente', contaCessionario:'Conta Cessionário', compromissada:'Compromissada', retorno:'Retorno Bruto', cdiTaxa:'Taxa CDI', puIda:'PU IDA', puVolta:'PU VOLTA' };
+  const exportData = operacoes.map(op=>{
+    return {
+      [headerMap.data]: formatDateForDisplay(op.data),
+      [headerMap.descricao]: op.descricao,
+      [headerMap.banco]: op.banco,
+      [headerMap.contaCedente]: op.contaCedente,
+      [headerMap.contaCessionario]: op.contaCessionario,
+      [headerMap.compromissada]: op.compromissada,
+      [headerMap.retorno]: op.retorno,
+      [headerMap.cdiTaxa]: op.cdiTaxa || '',
+      [headerMap.puIda]: op.puIda || '',
+      [headerMap.puVolta]: op.puVolta || ''
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Dados');
+  XLSX.writeFile(wb, 'Conferencia_CDI_'+ new Date().toLocaleDateString('pt-BR').replace(/\//g,'-') + '.xlsx');
   log('✅ Export concluído.');
-});
+}
 
-/* ==========================
-   Comparar PDF ⇄ Excel (placeholder)
-   ========================== */
-document.getElementById('compareBtn').addEventListener('click', ()=>{
-  if(!selectedPdf){ log('Nenhum PDF selecionado. Ainda assim você pode comparar Excel -> Excel.'); }
-  if(!operacoes || operacoes.length===0){ log('Nenhuma operação importada para comparar.'); return; }
-  // Placeholder: aqui você faria a extração do PDF e comparação lógica
-  // Implementação de extração de dados de PDF (OCR ou parser de texto) exige libs específicas que não entram via browser sem servidor.
-  // Por enquanto mostramos resumo simples:
-  log(`🔎 Comparação simulada: ${operacoes.length} operações prontas para conciliação.`);
-  renderTable();
-});
-
-/* ==========================
-   Inicialização (carrega local)
-   ========================== */
-(function init(){
-  try {
+/* ---------------- Initialize / load local ---------------- */
+function init(){
+  // load local saved state if any
+  try{
     const s = localStorage.getItem('cdiControlState');
-    if(s){ operacoes = JSON.parse(s).operacoes || []; renderTable(); log('Dados locais carregados.'); }
-  } catch(e){ console.warn(e); }
-})();
+    if(s){
+      const st = JSON.parse(s);
+      operacoes = st.operacoes || [];
+      log(`⚠️ Carregando dados locais (${operacoes.length} operações). Faça login para salvar na nuvem.`);
+    } else {
+      log('Aguardando... Não há dados salvos localmente.');
+    }
+  }catch(e){ operacoes=[]; log('Erro carregar local: '+e.message) }
+  calculateAndRender();
+}
+init();
 </script>
 </body>
 </html>
