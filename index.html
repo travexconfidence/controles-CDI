@@ -177,6 +177,9 @@
         }
         /* Ações compactas */
         .action-cell{ text-align:center; }
+        /* Classes para botões na tabela para delegação de eventos */
+        .edit-btn { background: var(--primary); }
+        .delete-btn { background: var(--secondary); }
 
         /* --------------- GANHO/PERDA (BADGE) E NEGRITO GERAL --------------- */
         /* Estilo de Badge aplicado ao conteúdo da TD */
@@ -301,7 +304,7 @@
                 </div>
                 <div style="margin-top:8px;">
                     <label style="font-weight:600;color:var(--muted)">
-                        <input type="checkbox" id="showIndividualOps" checked onchange="calculateAndRender()"> Mostrar Detalhe por Operação
+                        <input type="checkbox" id="showIndividualOps" checked> Mostrar Detalhe por Operação
                     </label>
                 </div>
             </div>
@@ -324,11 +327,11 @@
             <div class="input-row">
                 <div>
                     <label for="taxaCdiAnual">Taxa CDI Anual Global (%)</label>
-                    <input type="text" id="taxaCdiAnual" placeholder="14,90" value="14,90" onchange="calculateAndRender()">
+                    <input type="text" id="taxaCdiAnual" placeholder="14,90" value="14,90">
                 </div>
                 <div>
                     <label for="diasAno">Dias no Ano</label>
-                    <input type="text" id="diasAno" placeholder="252" value="252" onchange="calculateAndRender()">
+                    <input type="text" id="diasAno" placeholder="252" value="252">
                 </div>
             </div>
             <hr style="border:none;border-top:1px solid rgba(15,23,36,0.04);margin:12px 0;">
@@ -649,8 +652,8 @@
                         <td style="text-align:center;">${(Number(taxaUsada)||0).toFixed(4).replace('.',',')}</td>
                         <td class="${ganhoClass}">${formatBRL(ganho)}</td>
                         <td class="action-cell">
-                            <button class="btn small" onclick="editOperation(${operacoes.indexOf(op)})">Alterar</button>
-                            <button class="btn small secondary" onclick="deleteOperation(${operacoes.indexOf(op)})">Excluir</button>
+                            <button class="btn small edit-btn" data-index="${operacoes.indexOf(op)}">Alterar</button>
+                            <button class="btn small secondary delete-btn" data-index="${operacoes.indexOf(op)}">Excluir</button>
                         </td>
                     </tr>`;
                 }
@@ -868,7 +871,7 @@
             });
         }
 
-        /* --- EVENT LISTENERS FINAIS --- */
+        /* --- EVENT LISTENERS FINAIS (Solução para CSP) --- */
 
         document.getElementById('addBtn').addEventListener('click', handleManualAdd);
         document.getElementById('loadExcelBtn').addEventListener('click', processFiles);
@@ -910,7 +913,6 @@
                 Compromissada: cleanCurrency(op.compromissada),
                 'Retorno Bruto': cleanCurrency(op.retorno),
                 'PU IDA': op.puIda,
-                // CORREÇÃO 2: Removido o apóstrofo extra.
                 'PU VOLTA': op.puVolta,
                 'Taxa CDI Anual (%)': cleanCdiTaxa(op.cdiTaxa)
             }));
@@ -920,8 +922,25 @@
             XLSX.writeFile(wb, "controle_cdi_export.xlsx");
             log('💾 Dados exportados para Excel.');
         });
-
-        // CORREÇÃO 1: Chama loadState após todo o script ser lido.
+        
+        // --- ADIÇÃO DE EVENT LISTENERS PARA FIX CSP (Passo 1B) ---
+        document.getElementById('taxaCdiAnual').addEventListener('change', calculateAndRender);
+        document.getElementById('diasAno').addEventListener('change', calculateAndRender);
+        document.getElementById('showIndividualOps').addEventListener('change', calculateAndRender);
+        
+        // --- DELEGAÇÃO DE EVENTOS PARA BOTÕES DA TABELA (Passo 2) ---
+        document.getElementById('resultTable').addEventListener('click', function(e) {
+            const target = e.target;
+            if (target.classList.contains('edit-btn')) {
+                const index = parseInt(target.getAttribute('data-index'));
+                editOperation(index);
+            } else if (target.classList.contains('delete-btn')) {
+                const index = parseInt(target.getAttribute('data-index'));
+                deleteOperation(index);
+            }
+        });
+        
+        // --- INICIALIZAÇÃO ---
         window.onload = loadState;
 
     </script>
