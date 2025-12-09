@@ -245,7 +245,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
-<body onload="loadState()">
+<body>
     <div id="logo-wrapper">
         <img id="siteLogo" alt="Logo do site">
     </div>
@@ -748,7 +748,7 @@
             }
         }
 
-        /* --- Funções de Importação (CORRIGIDAS E COMPLETAS) --- */
+        /* --- Funções de Importação --- */
         function mapHeaders(header) {
             const normalized = String(header).trim().toUpperCase();
             if (normalized.includes('DATA')) return 'data';
@@ -910,7 +910,8 @@
                 Compromissada: cleanCurrency(op.compromissada),
                 'Retorno Bruto': cleanCurrency(op.retorno),
                 'PU IDA': op.puIda,
-                'PU VOLTA': op.puVolta',
+                // CORREÇÃO 2: Removido o apóstrofo extra.
+                'PU VOLTA': op.puVolta,
                 'Taxa CDI Anual (%)': cleanCdiTaxa(op.cdiTaxa)
             }));
 
@@ -919,6 +920,9 @@
             XLSX.writeFile(wb, "controle_cdi_export.xlsx");
             log('💾 Dados exportados para Excel.');
         });
+
+        // CORREÇÃO 1: Chama loadState após todo o script ser lido.
+        window.onload = loadState;
 
     </script>
 </body>
